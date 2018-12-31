@@ -1,5 +1,5 @@
-const { WebClient } = require('@slack/client')
-const index = require('../index')
+import { WebClient } from '@slack/client'
+import * as index from '../src/index'
 
 jest.mock('@slack/client')
 
@@ -9,7 +9,7 @@ describe('buildAvailableDateTimeObj()', () => {
   })
 
   test('build availabble datetime object', async () => {
-    const subject = await index.buildAvailableDateTimeObj(page)
+    const subject: object = await index.buildAvailableDateTimeObj(page)
     const expectObj = {
       '10/13(土)': [],
       '10/14(日)': [],
@@ -55,7 +55,7 @@ describe('postMsg()', () => {
   const mockPostMessage = jest.fn()
 
   beforeEach(() => {
-    WebClient.mockImplementation(() => (
+    (WebClient as unknown as jest.Mock).mockImplementation(() => (
       { chat: { postMessage: mockPostMessage } }
     ))
     index.postMsg('text')
