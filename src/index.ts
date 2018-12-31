@@ -69,14 +69,16 @@ const postMsg = (text: string): void => {
   web.chat.postMessage({ text, channel: 'CD1M8BUM7' })
 }
 
-const collectAndPost = async (page: puppeteer.Page, parkName: string): Promise<void> => {
+const getCurrentPageInfo = async (page: puppeteer.Page): Promise<string> => {
   const availableDateTimeObj: object = await buildAvailableDateTimeObj(page)
   const info: string = buildInfo(availableDateTimeObj)
-  const text: string = (info === '') ? `${parkName} : no available time.` : `${parkName}\n\`\`\`\n${info}\`\`\``
-  postMsg(text)
+  if (info === '') return undefined
+  return info
 }
 
-const watchPark = async (browser: puppeteer.Browser, parkName: string) => {
+const getParkInfos = async (browser: puppeteer.Browser, parkName: string): Promise<string[]> => {
+  const infos: string[] = []
+
   const context: puppeteer.BrowserContext = await browser.createIncognitoBrowserContext()
   const page: puppeteer.Page = await context.newPage()
   await page.goto('https://yoyaku.cultos-y.jp/regasu-shinjuku/reserve/gin_menu')
@@ -89,10 +91,15 @@ const watchPark = async (browser: puppeteer.Browser, parkName: string) => {
   await clickAndWait(page, tennisSelector)
   await clickAndWait(page, '#contents #buttons-navigation input#btnOK')
   await clickAndWait(page, '#buttons-navigation ul.triple li.first a')
-  await collectAndPost(page, parkName)
+  const info1: string = await getCurrentPageInfo(page)
   await clickAndWait(page, '#timetable .top-nav input[title="次月"]')
-  await collectAndPost(page, parkName)
+  const info2: string = await getCurrentPageInfo(page)
   await context.close()
+
+  if (typeof info1 !== 'undefined') infos.push(info1)
+  if (typeof info2 !== 'undefined') infos.push(info2)
+
+  return infos
 }
 
 const watchShinjuku = async (_req: any, res: any) => {
@@ -107,10 +114,30 @@ const watchShinjuku = async (_req: any, res: any) => {
     // run without the sandbox if running on GCP
     if (process.env.FUNCTION_NAME !== undefined) { options.args = ['--no-sandbox', '--disable-setuid-sandbox'] }
     const browser: puppeteer.Browser = await puppeteer.launch(options)
+    const result: object = {}
     await Promise.all(PARK_NAMES.map(async (parkName: string) => {
-      await watchPark(browser, parkName)
+      const infos: string[] = await getParkInfos(browser, parkName)
+      result[parkName] = infos
+      return
     }))
     await browser.close()
+
+    let text: string = ''
+    Object.keys(result).forEach((parkName: string) => {
+      text += `${parkName}\n`
+      const infos: string[] = result[parkName]
+      if (infos.length === 0) {
+        text += 'no available time.\n'
+      } else {
+        text += '\`\`\`\n'
+        infos.forEach((info: string) => {
+          text += `${info}\n`
+        })
+        text += '\`\`\`\n'
+      }
+    })
+
+    await postMsg(text)
 
     res.send('Success!')
   } catch (err) {
@@ -124,4 +151,4 @@ const watchShinjuku = async (_req: any, res: any) => {
   }
 }
 
-export { watchShinjuku, buildAvailableDateTimeObj, buildInfo, postMsg, collectAndPost }
+export { watchShinjuku, buildAvailableDateTimeObj, buildInfo, postMsg }
