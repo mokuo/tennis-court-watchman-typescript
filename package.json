@@ -23,5 +23,9 @@
     "tslint-config-airbnb": "^5.11.1",
     "tslint-language-service": "^0.9.9",
     "typescript": "^3.2.2"
+  },
+  "dependencies": {
+    "@slack/client": "^4.8.0",
+    "puppeteer": "^1.11.0"
   }
 }
