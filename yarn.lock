@@ -77,6 +77,12 @@
   dependencies:
     "@types/node" "*"
 
+"@types/jest-environment-puppeteer@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@types/jest-environment-puppeteer/-/jest-environment-puppeteer-2.2.1.tgz#ececed13f3950ea6a7f8846537d3a1f6fc598646"
+  dependencies:
+    "@types/puppeteer" "*"
+
 "@types/jest@^23.3.10":
   version "23.3.10"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.10.tgz#4897974cc317bf99d4fe6af1efa15957fa9c94de"
@@ -103,7 +109,7 @@
   dependencies:
     "@types/retry" "*"
 
-"@types/puppeteer@^1.11.1":
+"@types/puppeteer@*", "@types/puppeteer@^1.11.1":
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/@types/puppeteer/-/puppeteer-1.11.1.tgz#f2fe2e08917af2b4dc4b03bd2b838c05cb9d8410"
   dependencies:
