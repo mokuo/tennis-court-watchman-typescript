@@ -7,6 +7,9 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^10.12.18",
+    "tslint": "^5.12.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "tslint-language-service": "^0.9.9",
     "typescript": "^3.2.2"
   }
 }
