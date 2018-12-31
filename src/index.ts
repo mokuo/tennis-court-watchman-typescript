@@ -1,58 +1,61 @@
 import * as puppeteer from 'puppeteer'
 import { WebClient } from '@slack/client'
 
-const clickAndWait = async (page, selector) => {
+const clickAndWait = async (page: puppeteer.Page, selector: string): Promise<void> => {
   await Promise.all([
     page.waitForNavigation(),
     page.click(selector),
   ])
 }
 
-const evalClickAndWait = async (page, selector, nextSelector) => {
+const evalClickAndWait = async (page: puppeteer.Page, selector: string, nextSelector: string): Promise<void> => {
   await Promise.all([
     page.waitForNavigation(),
-    page.$eval(selector, el => el.click()),
+    page.$eval(selector, (el: HTMLElement) => el.click()),
     page.waitForSelector(nextSelector),
   ])
 }
 
-const buildAvailableDateTimeObj = async (page) => {
-  const availableDateTimeObj = await page.$eval('#contents #inner-contents1 #timetable .wrapper table', (tableElement) => {
-    const thElements = Array.from(tableElement.querySelectorAll('thead tr th')).slice(1)
-    const times = thElements.map(el => el.textContent.replace(/(\n|\t|<br>|<span>|<\/span>)/g, ''))
-    const obj = {}
+const buildAvailableDateTimeObj = async (page: puppeteer.Page): Promise<object> => {
+  const availableDateTimeObj =
+    await page.$eval('#contents #inner-contents1 #timetable .wrapper table', (tableElement: Element) => {
+      const thElements: Element[] = Array.from(tableElement.querySelectorAll('thead tr th')).slice(1)
+      const times: string[] = thElements.map((el: Element) => {
+        return el.textContent.replace(/(\n|\t|<br>|<span>|<\/span>)/g, '')
+      })
+      const obj = {}
 
-    tableElement.querySelectorAll('tbody').forEach((tbodyElement) => {
-      const date = tbodyElement.querySelector('th').textContent.trim()
-      if (/[月火水木金]/.test(date)) { return }
+      tableElement.querySelectorAll('tbody').forEach((tbodyElement: Element) => {
+        const date: string = tbodyElement.querySelector('th').textContent.trim()
+        if (/[月火水木金]/.test(date)) { return }
 
-      const availableTimeList = []
-      tbodyElement.querySelectorAll('td').forEach((tdElement, index) => {
-        const imgElement = tdElement.querySelector('img')
-        const OX = imgElement.getAttribute('title')
-        if (OX === 'O') {
-          availableTimeList.push(times[index])
-        }
+        const availableTimeList: string[] = []
+        tbodyElement.querySelectorAll('td').forEach((tdElement: Element, index: number) => {
+          const imgElement: Element = tdElement.querySelector('img')
+          const OX: string = imgElement.getAttribute('title')
+          if (OX === 'O') {
+            availableTimeList.push(times[index])
+          }
+        })
+
+        obj[date] = availableTimeList
       })
 
-      obj[date] = availableTimeList
+      return obj
     })
-
-    return obj
-  })
 
   return availableDateTimeObj
 }
 
-const buildInfo = (availableDateTimeObj) => {
-  let info = ''
+const buildInfo = (availableDateTimeObj: object): string => {
+  let info: string = ''
 
-  Object.keys(availableDateTimeObj).forEach((key) => {
-    const times = availableDateTimeObj[key]
+  Object.keys(availableDateTimeObj).forEach((key: string) => {
+    const times: string[] = availableDateTimeObj[key]
     if (times.length === 0) { return }
 
     info += `${key}\n`
-    times.forEach((time) => {
+    times.forEach((time: string) => {
       info += `  - ${time}\n`
     })
   })
@@ -60,22 +63,22 @@ const buildInfo = (availableDateTimeObj) => {
   return info
 }
 
-const postMsg = (text) => {
-  const token = process.env.SLACK_TOKEN
-  const web = new WebClient(token)
-  web.chat.postMessage({ channel: 'CD1M8BUM7', text })
+const postMsg = (text: string): void => {
+  const token: string = process.env.SLACK_TOKEN
+  const web: WebClient = new WebClient(token)
+  web.chat.postMessage({ text, channel: 'CD1M8BUM7' })
 }
 
-const collectAndPost = async (page, parkName) => {
-  const availableDateTimeObj = await buildAvailableDateTimeObj(page)
-  const info = buildInfo(availableDateTimeObj)
-  const text = (info === '') ? `${parkName} : no available time.` : `${parkName}\n\`\`\`\n${info}\`\`\``
+const collectAndPost = async (page: puppeteer.Page, parkName: string): Promise<void> => {
+  const availableDateTimeObj: object = await buildAvailableDateTimeObj(page)
+  const info: string = buildInfo(availableDateTimeObj)
+  const text: string = (info === '') ? `${parkName} : no available time.` : `${parkName}\n\`\`\`\n${info}\`\`\``
   postMsg(text)
 }
 
-const watchPark = async (browser, parkName) => {
-  const context = await browser.createIncognitoBrowserContext()
-  const page = await context.newPage()
+const watchPark = async (browser: puppeteer.Browser, parkName: string) => {
+  const context: puppeteer.BrowserContext = await browser.createIncognitoBrowserContext()
+  const page: puppeteer.Page = await context.newPage()
   await page.goto('https://yoyaku.cultos-y.jp/regasu-shinjuku/reserve/gin_menu')
   await clickAndWait(page, '#contents ul.double li.first input[title="かんたん操作"]')
   await clickAndWait(page, '#contents ul.double li.first input[title="空き状況確認"]')
@@ -92,19 +95,19 @@ const watchPark = async (browser, parkName) => {
   await context.close()
 }
 
-const watchShinjuku = async (req, res) => {
+const watchShinjuku = async (_req: any, res: any) => {
   try {
-    const PARK_NAMES = [
+    const PARK_NAMES: string[] = [
       '甘泉園公園',
       '落合中央公園',
       '西落合公園',
     ]
 
-    const options = {}
+    const options: any = {}
     // run without the sandbox if running on GCP
     if (process.env.FUNCTION_NAME !== undefined) { options.args = ['--no-sandbox', '--disable-setuid-sandbox'] }
-    const browser = await puppeteer.launch(options)
-    await Promise.all(PARK_NAMES.map(async (parkName) => {
+    const browser: puppeteer.Browser = await puppeteer.launch(options)
+    await Promise.all(PARK_NAMES.map(async (parkName: string) => {
       await watchPark(browser, parkName)
     }))
     await browser.close()
@@ -121,8 +124,4 @@ const watchShinjuku = async (req, res) => {
   }
 }
 
-module.exports.buildAvailableDateTimeObj = buildAvailableDateTimeObj
-module.exports.buildInfo = buildInfo
-module.exports.postMsg = postMsg
-module.exports.collectAndPost = collectAndPost
-module.exports.watchShinjuku = watchShinjuku
+export { watchShinjuku, buildAvailableDateTimeObj, buildInfo, postMsg, collectAndPost }
