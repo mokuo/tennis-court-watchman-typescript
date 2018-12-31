@@ -34,13 +34,6 @@ export const buildAvailableDateTimeObj = async (page: puppeteer.Page): Promise<o
   return availableDateTimeObj
 }
 
-const getCurrentPageInfo = async (page: puppeteer.Page): Promise<string> => {
-  const availableDateTimeObj: object = await buildAvailableDateTimeObj(page)
-  const info: string = buildInfo(availableDateTimeObj)
-  if (info === '') return undefined
-  return info
-}
-
 const getParkInfos = async (browser: puppeteer.Browser, parkName: string): Promise<string[]> => {
   const infos: string[] = []
 
@@ -56,13 +49,15 @@ const getParkInfos = async (browser: puppeteer.Browser, parkName: string): Promi
   await clickAndWait(page, tennisSelector)
   await clickAndWait(page, '#contents #buttons-navigation input#btnOK')
   await clickAndWait(page, '#buttons-navigation ul.triple li.first a')
-  const info1: string = await getCurrentPageInfo(page)
+  const availableDateTimeObj1: object = await buildAvailableDateTimeObj(page)
+  const info1: string = buildInfo(availableDateTimeObj1)
   await clickAndWait(page, '#timetable .top-nav input[title="次月"]')
-  const info2: string = await getCurrentPageInfo(page)
+  const availableDateTimeObj2: object = await buildAvailableDateTimeObj(page)
+  const info2: string = buildInfo(availableDateTimeObj2)
   await context.close()
 
-  if (typeof info1 !== 'undefined') infos.push(info1)
-  if (typeof info2 !== 'undefined') infos.push(info2)
+  if (info1 !== '') infos.push(info1)
+  if (info2 !== '') infos.push(info2)
 
   return infos
 }
