@@ -1,0 +1,8 @@
+{
+  "name": "tennis-court-watchman",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "ssh://git@github.com/mokuo/tennis-court-watchman.git",
+  "author": "mokuo <tennis10988.yk@gmail.com>",
+  "license": "MIT"
+}
