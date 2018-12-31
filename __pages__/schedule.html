@@ -1,0 +1,8018 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf">
+<meta http-equiv="content-style-type" content="text/css">
+<meta http-equiv="content-script-type" content="text/javascript">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<title>施設別予約状況-開始</title>
+<link rel="stylesheet" href="/regasu-shinjuku/jsp/stylesheets_jp/simple.css" type="text/css">
+<script language="javascript">
+
+
+	//選択されたコマの数量
+	var selKomaNum = 0;
+
+
+	var disp_id = 1;
+	var divid = 1;
+
+
+
+	var tb_disp_id_min = 1;
+	var tb_disp_id_max = 7;
+
+
+	if (4 < 7) {
+		tb_disp_id_min = 1;
+		tb_disp_id_max = 7;
+	}
+
+
+	function initButton() {
+
+		var int_td = 30;
+
+		var tagid_prefix = "td" + divid + disp_id;
+		var obj_array = new Array(2);
+		obj_array[0] = document.getElementsByTagName("th");
+		obj_array[1] = document.getElementsByTagName("td");
+		for(i = 0 ; i < obj_array.length; i++){
+			for(j = 0; j < obj_array[i].length; j++){
+				var objtmp = obj_array[i][j];
+				var objidtmp = objtmp.id;
+				if (objidtmp.indexOf(tagid_prefix) == 0){
+					var colno = objidtmp.substring(objidtmp.indexOf("_") + 1);
+					if( tb_disp_id_min <= colno && colno <=tb_disp_id_max) {
+						objtmp.style.display="";
+					} else {
+						objtmp.style.display="none";
+					}
+				}
+			}
+		}
+
+	}
+
+	var renzokuflag = false;
+
+	function okbutton() {
+
+		var flag = false;
+
+
+
+		var hidindex = document.form_nm.hidflag.value;
+
+		var index = ++hidindex;
+
+		for (i=0;i<= hidindex;i++) {
+
+			if (flag) {
+
+
+			    document.form_nm.flg_sstkoma.value = "1";
+
+				break;
+			}
+
+			var index_i;
+			var index_j;
+
+			for (j=0;j<28;j++) {
+//				var hiddenId = "record" + i + j;
+				var hiddenId = "record" + i + '_' + j;
+				var check_elm = document.getElementById(hiddenId);
+
+
+				if (check_elm != null && check_elm.value == document.form_nm.kaisikoma.options[i].value) {
+
+					index_i = j;
+				}
+
+
+				if (check_elm != null && check_elm.value == document.form_nm.syurkoma.options[i].value) {
+
+					index_j = j;
+				}
+			}
+
+			for (;index_i<index_j;index_i++) {
+//				var check_id = "record" + i + index_i;
+				var check_id = "record" + i + "_" + index_i;
+				var check_elem = document.getElementById(check_id);
+				if (check_elem.value == 0 || check_elem.value == null ) {
+					flag = true;
+					break;
+				}
+			}
+
+
+
+
+
+
+
+
+
+			if (document.form_nm.kaisikoma.options[i] != null
+				&&document.form_nm.kaisikoma.options[i].value != 0) {
+				document.form_nm.kaisikoma.options[i].selected = true;
+				document.form_nm.g_kaisitime.options[i].selected = true;
+				document.form_nm.kanricd.options[i].selected = true;
+				document.form_nm.g_sisetucd.options[i].selected = true;
+				document.form_nm.cssisetucd.options[i].selected = true;
+
+
+
+
+
+
+
+
+				document.form_nm.basyocd.options[i].selected = true;
+
+
+				document.form_nm.g_stgroup.options[i].selected = true;
+
+
+				document.form_nm.ymd.options[i].selected = true;
+
+
+
+
+				if (document.form_nm.g_renzkkoma.options[i].value == 1) {
+
+					renzokuflag = true;
+				} else {
+					renzokuflag = false;
+				}
+			}
+
+
+
+
+
+			if (document.form_nm.syurkoma.options[i] != null
+				&& document.form_nm.syurkoma.options[i].value != 0) {
+				document.form_nm.syurkoma.options[i].selected = true;
+				document.form_nm.g_syurtime.options[i].selected = true;
+
+			}
+		}
+        if (renzokuflag) {
+
+
+        		document.form_nm.action="/regasu-shinjuku/reserve/"+"gin_z_amenitytime_sel_2";
+
+        	} else {
+
+
+       			document.form_nm.action="/regasu-shinjuku/reserve/"+"gin_z_count_input";
+
+            }
+
+
+
+
+
+
+		document.form_nm.showStartKoma.value = tb_disp_id_min;
+		document.form_nm.showEndKoma.value = tb_disp_id_max;
+		document.form_nm.submit();
+
+
+	}
+
+	function okbuttonTk() {
+
+
+
+		document.form_nm.action = "/regasu-shinjuku/reserve/gin_k_id_input";
+		document.form_nm.submit();
+
+	}
+
+	function onclickbutton(count,num) {
+
+
+		if (selKomaNum != 0) {
+			return ;
+		}
+		selKomaNum = 1;
+
+		var button = document.getElementById("button" + count + num);
+
+		checkkoma(count,num);
+		if (button.alt == "O") {
+
+			button.src = "/regasu-shinjuku/jsp/images_jp/common/icon_timetable_selected.gif";
+			button.alt = "選択";
+
+			button.title = "選択";
+
+		} else {
+
+			button.src = "/regasu-shinjuku/jsp/images_jp/common/icon_timetable_O.gif";
+			button.alt = "O";
+
+			button.title = "O";
+
+		}
+		okbutton();
+	}
+
+	function checkkoma(index,num) {
+//		var hiddenId = "record" + index + num;
+		var hiddenId = "record" + index + "_" + num;
+
+
+		document.form_nm.hidflag.value = index;
+
+		var elementId = document.getElementById(hiddenId);
+		if (elementId.value == 0) {
+			elementId.value = num;
+		} else {
+			elementId.value = 0;
+		}
+
+		var min_koma = 28;
+		var max_koma = 0;
+		var flagmin = 0;
+		var flagmax = 0;
+		var kaisitime;
+		var syrrtime;
+		for (i=1;i<=28;i++) {
+			var j = i + 1;
+//			var i_id = "record" + index + i;
+//			var kaisitimeid = "kaisitime" + index + i;
+//			var syurtimeid = "syuryotime" + index + i;
+			var i_id = "record" + index + "_" + i;
+			var kaisitimeid = "kaisitime" + index + "_" + i;
+			var syurtimeid = "syuryotime" + index + "_" + i;
+
+			var i_elem = document.getElementById(i_id);
+			var kaisi_elem = document.getElementById(kaisitimeid);
+			var syur_elem = document.getElementById(syurtimeid);
+
+			if (i_elem != null && i_elem.value != 0 && i_elem.value < min_koma) {
+				min_koma = i_elem.value;
+				kaisitime = kaisi_elem.value;
+			}
+			if (i_elem != null && i_elem.value != 0 && i_elem.value > max_koma) {
+				max_koma = i_elem.value;
+				syrrtime = syur_elem.value;
+			}
+
+		}
+
+		if (min_koma != 28 && max_koma != 0) {
+
+
+
+
+
+			document.form_nm.g_kaisitime.options[index].value = kaisitime;
+			document.form_nm.g_syurtime.options[index].value = syrrtime;
+			document.form_nm.kaisikoma.options[index].value = min_koma;
+			document.form_nm.syurkoma.options[index].value = max_koma;
+
+		} else {
+
+
+
+
+
+			document.form_nm.g_kaisitime.options[index].value = "";
+			document.form_nm.g_syurtime.options[index].value = "";
+			document.form_nm.kaisikoma.options[index].value = "";
+			document.form_nm.syurkoma.options[index].value = "";
+
+			renzokuflag = true;
+		}
+	}
+
+	function leftbutton() {
+
+		var next_id = tb_disp_id_max - 7;
+		var int_td = 7;
+		if (disp_id == 4) {
+			int_td = 2;
+		}
+		for (i=0;i<=int_td;i++) {
+
+
+
+
+			var td_obj = document.getElementById("td" + divid + disp_id + i + "_" + tb_disp_id_max);
+
+			if (td_obj == null) {
+			} else {
+
+				td_obj.style.display="none";
+			}
+		}
+		for (i=0;i<=int_td;i++) {
+
+
+
+
+			var next_td_obj = document.getElementById("td" + divid + disp_id + i + "_" + next_id);
+
+			if (next_td_obj == null) {
+			} else {
+
+				next_td_obj.style.display="";
+			}
+		}
+
+
+		tb_disp_id_min = tb_disp_id_min - 1;
+		tb_disp_id_max = tb_disp_id_max - 1;
+
+
+		butonCheck();
+	}
+
+	function rightbutton() {
+
+		var next_id = tb_disp_id_min + 7;
+		var int_td = 7;
+		if (disp_id == 4) {
+			int_td = 2;
+		}
+		for (i=0;i<=int_td;i++) {
+
+
+
+
+			var next_td_obj = document.getElementById("td" + divid + disp_id + i + "_" + next_id);
+
+			if (next_td_obj == null) {
+			} else {
+
+				next_td_obj.style.display="";
+			}
+
+		}
+		for (i=0;i<=int_td;i++) {
+
+
+
+
+			var td_obj = document.getElementById("td" + divid + disp_id + i + "_" + tb_disp_id_min);
+
+			if (td_obj == null) {
+			} else {
+
+				td_obj.style.display="none";
+			}
+		}
+
+
+		tb_disp_id_min = tb_disp_id_min + 1;
+		tb_disp_id_max = tb_disp_id_max + 1;
+
+
+		butonCheck();
+	}
+
+
+	function downbutton() {
+
+		var next_id = disp_id + 1;
+
+
+		var obj = document.getElementById("" + divid + disp_id);
+
+
+
+		var next_obj = document.getElementById("" + divid + next_id);
+
+
+		obj.style.display="none";
+
+		next_obj.style.display="";
+
+		var int_td = 6;
+		if (next_id == 4) {
+			int_td = 0;
+		}
+		for (i=0;i<=int_td;i++) {
+			for (j=tb_disp_id_min;j<=tb_disp_id_max;j++) {
+
+
+
+				var next_td_obj = document.getElementById("td" + divid + next_id + i + "_" + j);
+
+
+				if (next_td_obj == null) {
+				} else {
+
+					next_td_obj.style.display="";
+				}
+			}
+
+		}
+		for (i=0;i<=6;i++) {
+			for (j=tb_disp_id_min;j<=tb_disp_id_max;j++) {
+
+
+
+				var td_obj = document.getElementById("td" + divid + disp_id + i + "_" + j);
+
+
+				if (td_obj == null) {
+				} else {
+
+					td_obj.style.display="none";
+				}
+			}
+		}
+
+
+		disp_id = next_id;
+
+
+		butonCheck();
+
+	}
+
+
+
+	function upbutton() {
+
+		var prev_id = disp_id - 1;
+
+
+		var obj = document.getElementById("" + divid + disp_id);
+
+
+		var prev_obj = document.getElementById("" + divid + prev_id);
+
+
+		obj.style.display="none";
+
+		prev_obj.style.display="";
+
+		var int_td = 6;
+		if (disp_id == 4) {
+			int_td = 0;
+		}
+		for (i=0;i<=6;i++) {
+			for (j=tb_disp_id_min;j<=tb_disp_id_max;j++) {
+
+
+
+				var next_td_obj = document.getElementById("td" + divid + prev_id + i + "_" + j);
+
+				if (next_td_obj == null) {
+				} else {
+
+					next_td_obj.style.display="";
+				}
+			}
+
+		}
+		for (i=0;i<=int_td;i++) {
+			for (j=tb_disp_id_min;j<=tb_disp_id_max;j++) {
+
+
+
+				var td_obj = document.getElementById("td" + divid + disp_id + i + "_" + j);
+
+				if (td_obj == null) {
+				} else {
+
+					td_obj.style.display="none";
+				}
+			}
+		}
+
+
+		disp_id = prev_id;
+
+
+		butonCheck();
+
+	}
+
+	function butonCheck() {
+
+
+		initButton();
+
+
+		var left_obj = document.getElementById("leftbutton"+divid);
+		if(tb_disp_id_min <= 1) {
+			left_obj.style.display="none";
+		} else {
+			if(left_obj.style.display == "none"){
+				left_obj.style.display="";
+			}
+		}
+
+		var right_obj = document.getElementById("rightbutton"+divid);
+		if(tb_disp_id_max >= 4) {
+			right_obj.style.display="none";
+		} else {
+			if(right_obj.style.display == "none"){
+				right_obj.style.display="";
+			}
+		}
+
+	}
+
+
+	function changeDspDay(url, idx, flg0,flg1, dspDay){
+		document.chgDspDateFrm.action = url;
+		document.chgDspDateFrm.u_genzai_idx.value = idx;
+		document.chgDspDateFrm.flg_ikou.value = flg0;
+
+
+		document.chgDspDateFrm.hiduke_sousa_flg.value = flg1;
+
+		document.chgDspDateFrm.u_hyojibi.value = dspDay;
+
+		document.chgDspDateFrm.showStartKoma.value = tb_disp_id_min;
+		document.chgDspDateFrm.showEndKoma.value = tb_disp_id_max;
+
+
+		if(document.form_nm.yoyakuinfo){
+			document.chgDspDateFrm.yoyakuinfo.value = document.form_nm.yoyakuinfo.value;
+		}
+		document.chgDspDateFrm.submit();
+		return true;
+	}
+
+	function okbutton1() {
+		document.backFrm.showStartKoma.value = tb_disp_id_min;
+		document.backFrm.showEndKoma.value = tb_disp_id_max;
+		document.backFrm.action="/regasu-shinjuku/reserve/"+"gin_z_datetime_sel_1";
+		document.backFrm.submit();
+	}
+
+
+</script>
+</head>
+<body onload="javascript:butonCheck();">
+
+<div id="wrapper">
+
+<div id="header">
+    	<h1>施設別予約状況-開始</h1>
+	   	 <p class="right"><br />
+
+					<strong>ようこそゲストさん</strong>
+
+   	 	</p>
+</div><!-- header -->
+
+<p id="path">		<a href="/regasu-shinjuku/reserve/gin_init?g_sessionid=2w1wUa0uddfwg663Ed013Quf43l1P3mF">システムトップページ</A>
+ &gt;&gt; <FONT class="fopp07"><A href=/regasu-shinjuku/reserve/gin_z_group_sel_1?u_genzai_idx=0&amp;g_kinonaiyo=8&g_sessionid=2w1wUa0uddfwg663Ed013Quf43l1P3mF>分類選択１（予約）</A></FONT> &gt;&gt; <FONT class="fopp07"><A href=/regasu-shinjuku/reserve/gin_z_amenity_sel?u_genzai_idx=1&amp;g_kinonaiyo=8&g_sessionid=2w1wUa0uddfwg663Ed013Quf43l1P3mF>施設選択（予約）</A></FONT> &gt;&gt; <FONT class="fopp07"><A href=/regasu-shinjuku/reserve/gin_z_room_sel?u_genzai_idx=2&amp;g_kinonaiyo=8&g_sessionid=2w1wUa0uddfwg663Ed013Quf43l1P3mF>部屋選択（予約）</A></FONT> &gt;&gt; <FONT class="fopp07"><A href=/regasu-shinjuku/reserve/gin_z_dest_sel?u_genzai_idx=3&amp;g_kinonaiyo=8&g_sessionid=2w1wUa0uddfwg663Ed013Quf43l1P3mF>目的選択（予約）</A></FONT> &gt;&gt; <FONT class="fopp07"><A href=/regasu-shinjuku/reserve/gin_z_dsp_sel?u_genzai_idx=4&amp;g_kinonaiyo=8&g_sessionid=2w1wUa0uddfwg663Ed013Quf43l1P3mF>表示選択（予約）</A></FONT> &gt;&gt; <FONT class="fopp07"><A href=/regasu-shinjuku/reserve/gin_z_datetime_sel_1?u_genzai_idx=5&amp;g_kinonaiyo=8&g_sessionid=2w1wUa0uddfwg663Ed013Quf43l1P3mF>日付別時間選択１（予約）</A></FONT> &gt;&gt; <FONT class="fopp06"><B>施設別時間選択1（予約）</B></FONT></p>
+
+<div id="contents">
+
+
+
+<div id="inner-contents1" STYLE="display:""">
+
+
+<p class="lead">
+利用される開始時間（区分）。
+
+</p>
+
+
+<div id="timetable">
+<ul class="top-nav">
+
+
+
+
+
+<li><A><IMG src="/regasu-shinjuku/jsp/images_jp/common/btn-month-back-grey-s.gif" alt="前月" title="前月" STYLE="visibility:hidden" /></A></li><li><A><IMG src="/regasu-shinjuku/jsp/images_jp/common/btn-week-back-grey-s.gif" alt="前週" title="前週" STYLE="visibility:hidden" /></A></li><li><A><IMG src="/regasu-shinjuku/jsp/images_jp/common/btn-fa-back-grey-s.gif" alt="前施設" title="前施設" STYLE="visibility:hidden" /></A></li><li li class="facilities">甘泉園公園<br />庭球場１面</li><li><A><IMG src="/regasu-shinjuku/jsp/images_jp/common/btn-fa-next-grey-s.gif" alt="次施設" title="次施設" STYLE="visibility:hidden" /></A></li><li><A><IMG src="/regasu-shinjuku/jsp/images_jp/common/btn-week-next-grey-s.gif" alt="翌週" title="翌週" STYLE="visibility:hidden" /></A></li><li><A><IMG src="/regasu-shinjuku/jsp/images_jp/common/btn-month-next-grey-s.gif" alt="翌月" title="翌月" STYLE="visibility:hidden" /></A></li>
+
+
+
+
+
+</ul>
+
+<div class="wrapper">
+
+
+
+
+
+		<table id="11" STYLE="display:""">
+
+
+
+
+
+
+
+
+
+
+					<thead>
+						<TR>
+
+
+							<th class="empty">&nbsp;</th>
+
+
+				<th  id="td110_1" STYLE="display:""">
+						09:00<br />
+						<span>～</span><br />
+						11:00
+				</th>
+
+
+
+
+				<th  id="td110_2" STYLE="display:""">
+						11:00<br />
+						<span>～</span><br />
+						13:00
+				</th>
+
+
+
+
+				<th  id="td110_3" STYLE="display:""">
+						13:00<br />
+						<span>～</span><br />
+						15:00
+				</th>
+
+
+
+
+				<th  id="td110_4" STYLE="display:""">
+						15:00<br />
+						<span>～</span><br />
+						17:00
+				</th>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					</TR>
+				</thead>
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record0_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record0_2" value="0">
+
+<INPUT type="hidden" id="kaisitime0_2" value="09:00">
+<INPUT type="hidden" id="syuryotime0_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/8(月)  </th>
+
+
+
+
+
+
+
+					    <td id="td110_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record0_3" value="0">
+
+<INPUT type="hidden" id="kaisitime0_3" value="11:00">
+<INPUT type="hidden" id="syuryotime0_3" value="13:00">
+
+
+
+
+
+					    <td id="td110_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record0_4" value="0">
+
+<INPUT type="hidden" id="kaisitime0_4" value="13:00">
+<INPUT type="hidden" id="syuryotime0_4" value="15:00">
+
+
+
+
+
+					    <td id="td110_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record0_5" value="0">
+
+<INPUT type="hidden" id="kaisitime0_5" value="15:00">
+<INPUT type="hidden" id="syuryotime0_5" value="17:00">
+
+
+
+
+
+					    <td id="td110_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record0_6" value="0">
+
+<INPUT type="hidden" id="kaisitime0_6" value="">
+<INPUT type="hidden" id="syuryotime0_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_7" value="0">
+
+<INPUT type="hidden" id="kaisitime0_7" value="">
+<INPUT type="hidden" id="syuryotime0_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_8" value="0">
+
+<INPUT type="hidden" id="kaisitime0_8" value="">
+<INPUT type="hidden" id="syuryotime0_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_9" value="0">
+
+<INPUT type="hidden" id="kaisitime0_9" value="">
+<INPUT type="hidden" id="syuryotime0_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_10" value="0">
+
+<INPUT type="hidden" id="kaisitime0_10" value="">
+<INPUT type="hidden" id="syuryotime0_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_11" value="0">
+
+<INPUT type="hidden" id="kaisitime0_11" value="">
+<INPUT type="hidden" id="syuryotime0_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_12" value="0">
+
+<INPUT type="hidden" id="kaisitime0_12" value="">
+<INPUT type="hidden" id="syuryotime0_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_13" value="0">
+
+<INPUT type="hidden" id="kaisitime0_13" value="">
+<INPUT type="hidden" id="syuryotime0_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_14" value="0">
+
+<INPUT type="hidden" id="kaisitime0_14" value="">
+<INPUT type="hidden" id="syuryotime0_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_15" value="0">
+
+<INPUT type="hidden" id="kaisitime0_15" value="">
+<INPUT type="hidden" id="syuryotime0_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_16" value="0">
+
+<INPUT type="hidden" id="kaisitime0_16" value="">
+<INPUT type="hidden" id="syuryotime0_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_17" value="0">
+
+<INPUT type="hidden" id="kaisitime0_17" value="">
+<INPUT type="hidden" id="syuryotime0_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_18" value="0">
+
+<INPUT type="hidden" id="kaisitime0_18" value="">
+<INPUT type="hidden" id="syuryotime0_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_19" value="0">
+
+<INPUT type="hidden" id="kaisitime0_19" value="">
+<INPUT type="hidden" id="syuryotime0_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_20" value="0">
+
+<INPUT type="hidden" id="kaisitime0_20" value="">
+<INPUT type="hidden" id="syuryotime0_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_21" value="0">
+
+<INPUT type="hidden" id="kaisitime0_21" value="">
+<INPUT type="hidden" id="syuryotime0_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_22" value="0">
+
+<INPUT type="hidden" id="kaisitime0_22" value="">
+<INPUT type="hidden" id="syuryotime0_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_23" value="0">
+
+<INPUT type="hidden" id="kaisitime0_23" value="">
+<INPUT type="hidden" id="syuryotime0_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_24" value="0">
+
+<INPUT type="hidden" id="kaisitime0_24" value="">
+<INPUT type="hidden" id="syuryotime0_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_25" value="0">
+
+<INPUT type="hidden" id="kaisitime0_25" value="">
+<INPUT type="hidden" id="syuryotime0_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_26" value="0">
+
+<INPUT type="hidden" id="kaisitime0_26" value="">
+<INPUT type="hidden" id="syuryotime0_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_27" value="0">
+
+<INPUT type="hidden" id="kaisitime0_27" value="">
+<INPUT type="hidden" id="syuryotime0_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record0_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record1_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record1_2" value="0">
+
+<INPUT type="hidden" id="kaisitime1_2" value="09:00">
+<INPUT type="hidden" id="syuryotime1_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/9(火)  </th>
+
+
+
+
+
+
+
+					    <td id="td111_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record1_3" value="0">
+
+<INPUT type="hidden" id="kaisitime1_3" value="11:00">
+<INPUT type="hidden" id="syuryotime1_3" value="13:00">
+
+
+
+
+
+					    <td id="td111_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record1_4" value="0">
+
+<INPUT type="hidden" id="kaisitime1_4" value="13:00">
+<INPUT type="hidden" id="syuryotime1_4" value="15:00">
+
+
+
+
+
+					    <td id="td111_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record1_5" value="0">
+
+<INPUT type="hidden" id="kaisitime1_5" value="15:00">
+<INPUT type="hidden" id="syuryotime1_5" value="17:00">
+
+
+
+
+
+					    <td id="td111_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record1_6" value="0">
+
+<INPUT type="hidden" id="kaisitime1_6" value="">
+<INPUT type="hidden" id="syuryotime1_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_7" value="0">
+
+<INPUT type="hidden" id="kaisitime1_7" value="">
+<INPUT type="hidden" id="syuryotime1_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_8" value="0">
+
+<INPUT type="hidden" id="kaisitime1_8" value="">
+<INPUT type="hidden" id="syuryotime1_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_9" value="0">
+
+<INPUT type="hidden" id="kaisitime1_9" value="">
+<INPUT type="hidden" id="syuryotime1_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_10" value="0">
+
+<INPUT type="hidden" id="kaisitime1_10" value="">
+<INPUT type="hidden" id="syuryotime1_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_11" value="0">
+
+<INPUT type="hidden" id="kaisitime1_11" value="">
+<INPUT type="hidden" id="syuryotime1_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_12" value="0">
+
+<INPUT type="hidden" id="kaisitime1_12" value="">
+<INPUT type="hidden" id="syuryotime1_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_13" value="0">
+
+<INPUT type="hidden" id="kaisitime1_13" value="">
+<INPUT type="hidden" id="syuryotime1_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_14" value="0">
+
+<INPUT type="hidden" id="kaisitime1_14" value="">
+<INPUT type="hidden" id="syuryotime1_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_15" value="0">
+
+<INPUT type="hidden" id="kaisitime1_15" value="">
+<INPUT type="hidden" id="syuryotime1_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_16" value="0">
+
+<INPUT type="hidden" id="kaisitime1_16" value="">
+<INPUT type="hidden" id="syuryotime1_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_17" value="0">
+
+<INPUT type="hidden" id="kaisitime1_17" value="">
+<INPUT type="hidden" id="syuryotime1_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_18" value="0">
+
+<INPUT type="hidden" id="kaisitime1_18" value="">
+<INPUT type="hidden" id="syuryotime1_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_19" value="0">
+
+<INPUT type="hidden" id="kaisitime1_19" value="">
+<INPUT type="hidden" id="syuryotime1_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_20" value="0">
+
+<INPUT type="hidden" id="kaisitime1_20" value="">
+<INPUT type="hidden" id="syuryotime1_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_21" value="0">
+
+<INPUT type="hidden" id="kaisitime1_21" value="">
+<INPUT type="hidden" id="syuryotime1_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_22" value="0">
+
+<INPUT type="hidden" id="kaisitime1_22" value="">
+<INPUT type="hidden" id="syuryotime1_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_23" value="0">
+
+<INPUT type="hidden" id="kaisitime1_23" value="">
+<INPUT type="hidden" id="syuryotime1_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_24" value="0">
+
+<INPUT type="hidden" id="kaisitime1_24" value="">
+<INPUT type="hidden" id="syuryotime1_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_25" value="0">
+
+<INPUT type="hidden" id="kaisitime1_25" value="">
+<INPUT type="hidden" id="syuryotime1_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_26" value="0">
+
+<INPUT type="hidden" id="kaisitime1_26" value="">
+<INPUT type="hidden" id="syuryotime1_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_27" value="0">
+
+<INPUT type="hidden" id="kaisitime1_27" value="">
+<INPUT type="hidden" id="syuryotime1_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record1_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record2_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record2_2" value="0">
+
+<INPUT type="hidden" id="kaisitime2_2" value="09:00">
+<INPUT type="hidden" id="syuryotime2_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/10(水)  </th>
+
+
+
+
+
+
+
+					    <td id="td112_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record2_3" value="0">
+
+<INPUT type="hidden" id="kaisitime2_3" value="11:00">
+<INPUT type="hidden" id="syuryotime2_3" value="13:00">
+
+
+
+
+						<td id="td112_2" STYLE="display:"""><a><img style="cursor:pointer" src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_O.gif" alt="O" title="O" ></a></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record2_4" value="0">
+
+<INPUT type="hidden" id="kaisitime2_4" value="13:00">
+<INPUT type="hidden" id="syuryotime2_4" value="15:00">
+
+
+
+
+
+					    <td id="td112_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record2_5" value="0">
+
+<INPUT type="hidden" id="kaisitime2_5" value="15:00">
+<INPUT type="hidden" id="syuryotime2_5" value="17:00">
+
+
+
+
+						<td id="td112_4" STYLE="display:"""><a><img style="cursor:pointer" src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_O.gif" alt="O" title="O" ></a></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record2_6" value="0">
+
+<INPUT type="hidden" id="kaisitime2_6" value="">
+<INPUT type="hidden" id="syuryotime2_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_7" value="0">
+
+<INPUT type="hidden" id="kaisitime2_7" value="">
+<INPUT type="hidden" id="syuryotime2_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_8" value="0">
+
+<INPUT type="hidden" id="kaisitime2_8" value="">
+<INPUT type="hidden" id="syuryotime2_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_9" value="0">
+
+<INPUT type="hidden" id="kaisitime2_9" value="">
+<INPUT type="hidden" id="syuryotime2_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_10" value="0">
+
+<INPUT type="hidden" id="kaisitime2_10" value="">
+<INPUT type="hidden" id="syuryotime2_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_11" value="0">
+
+<INPUT type="hidden" id="kaisitime2_11" value="">
+<INPUT type="hidden" id="syuryotime2_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_12" value="0">
+
+<INPUT type="hidden" id="kaisitime2_12" value="">
+<INPUT type="hidden" id="syuryotime2_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_13" value="0">
+
+<INPUT type="hidden" id="kaisitime2_13" value="">
+<INPUT type="hidden" id="syuryotime2_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_14" value="0">
+
+<INPUT type="hidden" id="kaisitime2_14" value="">
+<INPUT type="hidden" id="syuryotime2_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_15" value="0">
+
+<INPUT type="hidden" id="kaisitime2_15" value="">
+<INPUT type="hidden" id="syuryotime2_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_16" value="0">
+
+<INPUT type="hidden" id="kaisitime2_16" value="">
+<INPUT type="hidden" id="syuryotime2_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_17" value="0">
+
+<INPUT type="hidden" id="kaisitime2_17" value="">
+<INPUT type="hidden" id="syuryotime2_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_18" value="0">
+
+<INPUT type="hidden" id="kaisitime2_18" value="">
+<INPUT type="hidden" id="syuryotime2_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_19" value="0">
+
+<INPUT type="hidden" id="kaisitime2_19" value="">
+<INPUT type="hidden" id="syuryotime2_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_20" value="0">
+
+<INPUT type="hidden" id="kaisitime2_20" value="">
+<INPUT type="hidden" id="syuryotime2_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_21" value="0">
+
+<INPUT type="hidden" id="kaisitime2_21" value="">
+<INPUT type="hidden" id="syuryotime2_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_22" value="0">
+
+<INPUT type="hidden" id="kaisitime2_22" value="">
+<INPUT type="hidden" id="syuryotime2_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_23" value="0">
+
+<INPUT type="hidden" id="kaisitime2_23" value="">
+<INPUT type="hidden" id="syuryotime2_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_24" value="0">
+
+<INPUT type="hidden" id="kaisitime2_24" value="">
+<INPUT type="hidden" id="syuryotime2_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_25" value="0">
+
+<INPUT type="hidden" id="kaisitime2_25" value="">
+<INPUT type="hidden" id="syuryotime2_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_26" value="0">
+
+<INPUT type="hidden" id="kaisitime2_26" value="">
+<INPUT type="hidden" id="syuryotime2_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_27" value="0">
+
+<INPUT type="hidden" id="kaisitime2_27" value="">
+<INPUT type="hidden" id="syuryotime2_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record2_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record3_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record3_2" value="0">
+
+<INPUT type="hidden" id="kaisitime3_2" value="09:00">
+<INPUT type="hidden" id="syuryotime3_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/11(木)  </th>
+
+
+
+
+
+
+
+					    <td id="td113_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record3_3" value="0">
+
+<INPUT type="hidden" id="kaisitime3_3" value="11:00">
+<INPUT type="hidden" id="syuryotime3_3" value="13:00">
+
+
+
+
+
+					    <td id="td113_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record3_4" value="0">
+
+<INPUT type="hidden" id="kaisitime3_4" value="13:00">
+<INPUT type="hidden" id="syuryotime3_4" value="15:00">
+
+
+
+
+
+					    <td id="td113_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record3_5" value="0">
+
+<INPUT type="hidden" id="kaisitime3_5" value="15:00">
+<INPUT type="hidden" id="syuryotime3_5" value="17:00">
+
+
+
+
+
+					    <td id="td113_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record3_6" value="0">
+
+<INPUT type="hidden" id="kaisitime3_6" value="">
+<INPUT type="hidden" id="syuryotime3_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_7" value="0">
+
+<INPUT type="hidden" id="kaisitime3_7" value="">
+<INPUT type="hidden" id="syuryotime3_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_8" value="0">
+
+<INPUT type="hidden" id="kaisitime3_8" value="">
+<INPUT type="hidden" id="syuryotime3_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_9" value="0">
+
+<INPUT type="hidden" id="kaisitime3_9" value="">
+<INPUT type="hidden" id="syuryotime3_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_10" value="0">
+
+<INPUT type="hidden" id="kaisitime3_10" value="">
+<INPUT type="hidden" id="syuryotime3_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_11" value="0">
+
+<INPUT type="hidden" id="kaisitime3_11" value="">
+<INPUT type="hidden" id="syuryotime3_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_12" value="0">
+
+<INPUT type="hidden" id="kaisitime3_12" value="">
+<INPUT type="hidden" id="syuryotime3_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_13" value="0">
+
+<INPUT type="hidden" id="kaisitime3_13" value="">
+<INPUT type="hidden" id="syuryotime3_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_14" value="0">
+
+<INPUT type="hidden" id="kaisitime3_14" value="">
+<INPUT type="hidden" id="syuryotime3_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_15" value="0">
+
+<INPUT type="hidden" id="kaisitime3_15" value="">
+<INPUT type="hidden" id="syuryotime3_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_16" value="0">
+
+<INPUT type="hidden" id="kaisitime3_16" value="">
+<INPUT type="hidden" id="syuryotime3_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_17" value="0">
+
+<INPUT type="hidden" id="kaisitime3_17" value="">
+<INPUT type="hidden" id="syuryotime3_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_18" value="0">
+
+<INPUT type="hidden" id="kaisitime3_18" value="">
+<INPUT type="hidden" id="syuryotime3_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_19" value="0">
+
+<INPUT type="hidden" id="kaisitime3_19" value="">
+<INPUT type="hidden" id="syuryotime3_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_20" value="0">
+
+<INPUT type="hidden" id="kaisitime3_20" value="">
+<INPUT type="hidden" id="syuryotime3_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_21" value="0">
+
+<INPUT type="hidden" id="kaisitime3_21" value="">
+<INPUT type="hidden" id="syuryotime3_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_22" value="0">
+
+<INPUT type="hidden" id="kaisitime3_22" value="">
+<INPUT type="hidden" id="syuryotime3_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_23" value="0">
+
+<INPUT type="hidden" id="kaisitime3_23" value="">
+<INPUT type="hidden" id="syuryotime3_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_24" value="0">
+
+<INPUT type="hidden" id="kaisitime3_24" value="">
+<INPUT type="hidden" id="syuryotime3_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_25" value="0">
+
+<INPUT type="hidden" id="kaisitime3_25" value="">
+<INPUT type="hidden" id="syuryotime3_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_26" value="0">
+
+<INPUT type="hidden" id="kaisitime3_26" value="">
+<INPUT type="hidden" id="syuryotime3_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_27" value="0">
+
+<INPUT type="hidden" id="kaisitime3_27" value="">
+<INPUT type="hidden" id="syuryotime3_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record3_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record4_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record4_2" value="0">
+
+<INPUT type="hidden" id="kaisitime4_2" value="09:00">
+<INPUT type="hidden" id="syuryotime4_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/12(金)  </th>
+
+
+
+
+
+
+
+					    <td id="td114_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record4_3" value="0">
+
+<INPUT type="hidden" id="kaisitime4_3" value="11:00">
+<INPUT type="hidden" id="syuryotime4_3" value="13:00">
+
+
+
+
+
+					    <td id="td114_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record4_4" value="0">
+
+<INPUT type="hidden" id="kaisitime4_4" value="13:00">
+<INPUT type="hidden" id="syuryotime4_4" value="15:00">
+
+
+
+
+
+					    <td id="td114_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record4_5" value="0">
+
+<INPUT type="hidden" id="kaisitime4_5" value="15:00">
+<INPUT type="hidden" id="syuryotime4_5" value="17:00">
+
+
+
+
+
+					    <td id="td114_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record4_6" value="0">
+
+<INPUT type="hidden" id="kaisitime4_6" value="">
+<INPUT type="hidden" id="syuryotime4_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_7" value="0">
+
+<INPUT type="hidden" id="kaisitime4_7" value="">
+<INPUT type="hidden" id="syuryotime4_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_8" value="0">
+
+<INPUT type="hidden" id="kaisitime4_8" value="">
+<INPUT type="hidden" id="syuryotime4_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_9" value="0">
+
+<INPUT type="hidden" id="kaisitime4_9" value="">
+<INPUT type="hidden" id="syuryotime4_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_10" value="0">
+
+<INPUT type="hidden" id="kaisitime4_10" value="">
+<INPUT type="hidden" id="syuryotime4_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_11" value="0">
+
+<INPUT type="hidden" id="kaisitime4_11" value="">
+<INPUT type="hidden" id="syuryotime4_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_12" value="0">
+
+<INPUT type="hidden" id="kaisitime4_12" value="">
+<INPUT type="hidden" id="syuryotime4_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_13" value="0">
+
+<INPUT type="hidden" id="kaisitime4_13" value="">
+<INPUT type="hidden" id="syuryotime4_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_14" value="0">
+
+<INPUT type="hidden" id="kaisitime4_14" value="">
+<INPUT type="hidden" id="syuryotime4_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_15" value="0">
+
+<INPUT type="hidden" id="kaisitime4_15" value="">
+<INPUT type="hidden" id="syuryotime4_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_16" value="0">
+
+<INPUT type="hidden" id="kaisitime4_16" value="">
+<INPUT type="hidden" id="syuryotime4_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_17" value="0">
+
+<INPUT type="hidden" id="kaisitime4_17" value="">
+<INPUT type="hidden" id="syuryotime4_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_18" value="0">
+
+<INPUT type="hidden" id="kaisitime4_18" value="">
+<INPUT type="hidden" id="syuryotime4_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_19" value="0">
+
+<INPUT type="hidden" id="kaisitime4_19" value="">
+<INPUT type="hidden" id="syuryotime4_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_20" value="0">
+
+<INPUT type="hidden" id="kaisitime4_20" value="">
+<INPUT type="hidden" id="syuryotime4_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_21" value="0">
+
+<INPUT type="hidden" id="kaisitime4_21" value="">
+<INPUT type="hidden" id="syuryotime4_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_22" value="0">
+
+<INPUT type="hidden" id="kaisitime4_22" value="">
+<INPUT type="hidden" id="syuryotime4_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_23" value="0">
+
+<INPUT type="hidden" id="kaisitime4_23" value="">
+<INPUT type="hidden" id="syuryotime4_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_24" value="0">
+
+<INPUT type="hidden" id="kaisitime4_24" value="">
+<INPUT type="hidden" id="syuryotime4_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_25" value="0">
+
+<INPUT type="hidden" id="kaisitime4_25" value="">
+<INPUT type="hidden" id="syuryotime4_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_26" value="0">
+
+<INPUT type="hidden" id="kaisitime4_26" value="">
+<INPUT type="hidden" id="syuryotime4_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_27" value="0">
+
+<INPUT type="hidden" id="kaisitime4_27" value="">
+<INPUT type="hidden" id="syuryotime4_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record4_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record5_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record5_2" value="0">
+
+<INPUT type="hidden" id="kaisitime5_2" value="09:00">
+<INPUT type="hidden" id="syuryotime5_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/13(土)  </th>
+
+
+
+
+
+
+
+					    <td id="td115_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record5_3" value="0">
+
+<INPUT type="hidden" id="kaisitime5_3" value="11:00">
+<INPUT type="hidden" id="syuryotime5_3" value="13:00">
+
+
+
+
+
+					    <td id="td115_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record5_4" value="0">
+
+<INPUT type="hidden" id="kaisitime5_4" value="13:00">
+<INPUT type="hidden" id="syuryotime5_4" value="15:00">
+
+
+
+
+
+					    <td id="td115_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record5_5" value="0">
+
+<INPUT type="hidden" id="kaisitime5_5" value="15:00">
+<INPUT type="hidden" id="syuryotime5_5" value="17:00">
+
+
+
+
+
+					    <td id="td115_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record5_6" value="0">
+
+<INPUT type="hidden" id="kaisitime5_6" value="">
+<INPUT type="hidden" id="syuryotime5_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_7" value="0">
+
+<INPUT type="hidden" id="kaisitime5_7" value="">
+<INPUT type="hidden" id="syuryotime5_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_8" value="0">
+
+<INPUT type="hidden" id="kaisitime5_8" value="">
+<INPUT type="hidden" id="syuryotime5_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_9" value="0">
+
+<INPUT type="hidden" id="kaisitime5_9" value="">
+<INPUT type="hidden" id="syuryotime5_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_10" value="0">
+
+<INPUT type="hidden" id="kaisitime5_10" value="">
+<INPUT type="hidden" id="syuryotime5_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_11" value="0">
+
+<INPUT type="hidden" id="kaisitime5_11" value="">
+<INPUT type="hidden" id="syuryotime5_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_12" value="0">
+
+<INPUT type="hidden" id="kaisitime5_12" value="">
+<INPUT type="hidden" id="syuryotime5_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_13" value="0">
+
+<INPUT type="hidden" id="kaisitime5_13" value="">
+<INPUT type="hidden" id="syuryotime5_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_14" value="0">
+
+<INPUT type="hidden" id="kaisitime5_14" value="">
+<INPUT type="hidden" id="syuryotime5_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_15" value="0">
+
+<INPUT type="hidden" id="kaisitime5_15" value="">
+<INPUT type="hidden" id="syuryotime5_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_16" value="0">
+
+<INPUT type="hidden" id="kaisitime5_16" value="">
+<INPUT type="hidden" id="syuryotime5_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_17" value="0">
+
+<INPUT type="hidden" id="kaisitime5_17" value="">
+<INPUT type="hidden" id="syuryotime5_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_18" value="0">
+
+<INPUT type="hidden" id="kaisitime5_18" value="">
+<INPUT type="hidden" id="syuryotime5_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_19" value="0">
+
+<INPUT type="hidden" id="kaisitime5_19" value="">
+<INPUT type="hidden" id="syuryotime5_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_20" value="0">
+
+<INPUT type="hidden" id="kaisitime5_20" value="">
+<INPUT type="hidden" id="syuryotime5_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_21" value="0">
+
+<INPUT type="hidden" id="kaisitime5_21" value="">
+<INPUT type="hidden" id="syuryotime5_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_22" value="0">
+
+<INPUT type="hidden" id="kaisitime5_22" value="">
+<INPUT type="hidden" id="syuryotime5_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_23" value="0">
+
+<INPUT type="hidden" id="kaisitime5_23" value="">
+<INPUT type="hidden" id="syuryotime5_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_24" value="0">
+
+<INPUT type="hidden" id="kaisitime5_24" value="">
+<INPUT type="hidden" id="syuryotime5_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_25" value="0">
+
+<INPUT type="hidden" id="kaisitime5_25" value="">
+<INPUT type="hidden" id="syuryotime5_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_26" value="0">
+
+<INPUT type="hidden" id="kaisitime5_26" value="">
+<INPUT type="hidden" id="syuryotime5_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_27" value="0">
+
+<INPUT type="hidden" id="kaisitime5_27" value="">
+<INPUT type="hidden" id="syuryotime5_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record5_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record6_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record6_2" value="0">
+
+<INPUT type="hidden" id="kaisitime6_2" value="09:00">
+<INPUT type="hidden" id="syuryotime6_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/14(日)  </th>
+
+
+
+
+
+
+
+					    <td id="td116_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record6_3" value="0">
+
+<INPUT type="hidden" id="kaisitime6_3" value="11:00">
+<INPUT type="hidden" id="syuryotime6_3" value="13:00">
+
+
+
+
+
+					    <td id="td116_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record6_4" value="0">
+
+<INPUT type="hidden" id="kaisitime6_4" value="13:00">
+<INPUT type="hidden" id="syuryotime6_4" value="15:00">
+
+
+
+
+
+					    <td id="td116_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record6_5" value="0">
+
+<INPUT type="hidden" id="kaisitime6_5" value="15:00">
+<INPUT type="hidden" id="syuryotime6_5" value="17:00">
+
+
+
+
+
+					    <td id="td116_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record6_6" value="0">
+
+<INPUT type="hidden" id="kaisitime6_6" value="">
+<INPUT type="hidden" id="syuryotime6_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_7" value="0">
+
+<INPUT type="hidden" id="kaisitime6_7" value="">
+<INPUT type="hidden" id="syuryotime6_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_8" value="0">
+
+<INPUT type="hidden" id="kaisitime6_8" value="">
+<INPUT type="hidden" id="syuryotime6_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_9" value="0">
+
+<INPUT type="hidden" id="kaisitime6_9" value="">
+<INPUT type="hidden" id="syuryotime6_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_10" value="0">
+
+<INPUT type="hidden" id="kaisitime6_10" value="">
+<INPUT type="hidden" id="syuryotime6_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_11" value="0">
+
+<INPUT type="hidden" id="kaisitime6_11" value="">
+<INPUT type="hidden" id="syuryotime6_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_12" value="0">
+
+<INPUT type="hidden" id="kaisitime6_12" value="">
+<INPUT type="hidden" id="syuryotime6_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_13" value="0">
+
+<INPUT type="hidden" id="kaisitime6_13" value="">
+<INPUT type="hidden" id="syuryotime6_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_14" value="0">
+
+<INPUT type="hidden" id="kaisitime6_14" value="">
+<INPUT type="hidden" id="syuryotime6_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_15" value="0">
+
+<INPUT type="hidden" id="kaisitime6_15" value="">
+<INPUT type="hidden" id="syuryotime6_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_16" value="0">
+
+<INPUT type="hidden" id="kaisitime6_16" value="">
+<INPUT type="hidden" id="syuryotime6_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_17" value="0">
+
+<INPUT type="hidden" id="kaisitime6_17" value="">
+<INPUT type="hidden" id="syuryotime6_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_18" value="0">
+
+<INPUT type="hidden" id="kaisitime6_18" value="">
+<INPUT type="hidden" id="syuryotime6_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_19" value="0">
+
+<INPUT type="hidden" id="kaisitime6_19" value="">
+<INPUT type="hidden" id="syuryotime6_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_20" value="0">
+
+<INPUT type="hidden" id="kaisitime6_20" value="">
+<INPUT type="hidden" id="syuryotime6_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_21" value="0">
+
+<INPUT type="hidden" id="kaisitime6_21" value="">
+<INPUT type="hidden" id="syuryotime6_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_22" value="0">
+
+<INPUT type="hidden" id="kaisitime6_22" value="">
+<INPUT type="hidden" id="syuryotime6_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_23" value="0">
+
+<INPUT type="hidden" id="kaisitime6_23" value="">
+<INPUT type="hidden" id="syuryotime6_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_24" value="0">
+
+<INPUT type="hidden" id="kaisitime6_24" value="">
+<INPUT type="hidden" id="syuryotime6_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_25" value="0">
+
+<INPUT type="hidden" id="kaisitime6_25" value="">
+<INPUT type="hidden" id="syuryotime6_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_26" value="0">
+
+<INPUT type="hidden" id="kaisitime6_26" value="">
+<INPUT type="hidden" id="syuryotime6_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_27" value="0">
+
+<INPUT type="hidden" id="kaisitime6_27" value="">
+<INPUT type="hidden" id="syuryotime6_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record6_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record7_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record7_2" value="0">
+
+<INPUT type="hidden" id="kaisitime7_2" value="09:00">
+<INPUT type="hidden" id="syuryotime7_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/15(月)  </th>
+
+
+
+
+
+
+
+					    <td id="td117_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record7_3" value="0">
+
+<INPUT type="hidden" id="kaisitime7_3" value="11:00">
+<INPUT type="hidden" id="syuryotime7_3" value="13:00">
+
+
+
+
+
+					    <td id="td117_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record7_4" value="0">
+
+<INPUT type="hidden" id="kaisitime7_4" value="13:00">
+<INPUT type="hidden" id="syuryotime7_4" value="15:00">
+
+
+
+
+
+					    <td id="td117_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record7_5" value="0">
+
+<INPUT type="hidden" id="kaisitime7_5" value="15:00">
+<INPUT type="hidden" id="syuryotime7_5" value="17:00">
+
+
+
+
+
+					    <td id="td117_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record7_6" value="0">
+
+<INPUT type="hidden" id="kaisitime7_6" value="">
+<INPUT type="hidden" id="syuryotime7_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_7" value="0">
+
+<INPUT type="hidden" id="kaisitime7_7" value="">
+<INPUT type="hidden" id="syuryotime7_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_8" value="0">
+
+<INPUT type="hidden" id="kaisitime7_8" value="">
+<INPUT type="hidden" id="syuryotime7_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_9" value="0">
+
+<INPUT type="hidden" id="kaisitime7_9" value="">
+<INPUT type="hidden" id="syuryotime7_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_10" value="0">
+
+<INPUT type="hidden" id="kaisitime7_10" value="">
+<INPUT type="hidden" id="syuryotime7_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_11" value="0">
+
+<INPUT type="hidden" id="kaisitime7_11" value="">
+<INPUT type="hidden" id="syuryotime7_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_12" value="0">
+
+<INPUT type="hidden" id="kaisitime7_12" value="">
+<INPUT type="hidden" id="syuryotime7_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_13" value="0">
+
+<INPUT type="hidden" id="kaisitime7_13" value="">
+<INPUT type="hidden" id="syuryotime7_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_14" value="0">
+
+<INPUT type="hidden" id="kaisitime7_14" value="">
+<INPUT type="hidden" id="syuryotime7_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_15" value="0">
+
+<INPUT type="hidden" id="kaisitime7_15" value="">
+<INPUT type="hidden" id="syuryotime7_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_16" value="0">
+
+<INPUT type="hidden" id="kaisitime7_16" value="">
+<INPUT type="hidden" id="syuryotime7_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_17" value="0">
+
+<INPUT type="hidden" id="kaisitime7_17" value="">
+<INPUT type="hidden" id="syuryotime7_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_18" value="0">
+
+<INPUT type="hidden" id="kaisitime7_18" value="">
+<INPUT type="hidden" id="syuryotime7_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_19" value="0">
+
+<INPUT type="hidden" id="kaisitime7_19" value="">
+<INPUT type="hidden" id="syuryotime7_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_20" value="0">
+
+<INPUT type="hidden" id="kaisitime7_20" value="">
+<INPUT type="hidden" id="syuryotime7_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_21" value="0">
+
+<INPUT type="hidden" id="kaisitime7_21" value="">
+<INPUT type="hidden" id="syuryotime7_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_22" value="0">
+
+<INPUT type="hidden" id="kaisitime7_22" value="">
+<INPUT type="hidden" id="syuryotime7_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_23" value="0">
+
+<INPUT type="hidden" id="kaisitime7_23" value="">
+<INPUT type="hidden" id="syuryotime7_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_24" value="0">
+
+<INPUT type="hidden" id="kaisitime7_24" value="">
+<INPUT type="hidden" id="syuryotime7_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_25" value="0">
+
+<INPUT type="hidden" id="kaisitime7_25" value="">
+<INPUT type="hidden" id="syuryotime7_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_26" value="0">
+
+<INPUT type="hidden" id="kaisitime7_26" value="">
+<INPUT type="hidden" id="syuryotime7_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_27" value="0">
+
+<INPUT type="hidden" id="kaisitime7_27" value="">
+<INPUT type="hidden" id="syuryotime7_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record7_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record8_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record8_2" value="0">
+
+<INPUT type="hidden" id="kaisitime8_2" value="09:00">
+<INPUT type="hidden" id="syuryotime8_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/16(火)  </th>
+
+
+
+
+
+
+
+					    <td id="td118_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record8_3" value="0">
+
+<INPUT type="hidden" id="kaisitime8_3" value="11:00">
+<INPUT type="hidden" id="syuryotime8_3" value="13:00">
+
+
+
+
+
+					    <td id="td118_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record8_4" value="0">
+
+<INPUT type="hidden" id="kaisitime8_4" value="13:00">
+<INPUT type="hidden" id="syuryotime8_4" value="15:00">
+
+
+
+
+
+					    <td id="td118_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record8_5" value="0">
+
+<INPUT type="hidden" id="kaisitime8_5" value="15:00">
+<INPUT type="hidden" id="syuryotime8_5" value="17:00">
+
+
+
+
+
+					    <td id="td118_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record8_6" value="0">
+
+<INPUT type="hidden" id="kaisitime8_6" value="">
+<INPUT type="hidden" id="syuryotime8_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_7" value="0">
+
+<INPUT type="hidden" id="kaisitime8_7" value="">
+<INPUT type="hidden" id="syuryotime8_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_8" value="0">
+
+<INPUT type="hidden" id="kaisitime8_8" value="">
+<INPUT type="hidden" id="syuryotime8_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_9" value="0">
+
+<INPUT type="hidden" id="kaisitime8_9" value="">
+<INPUT type="hidden" id="syuryotime8_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_10" value="0">
+
+<INPUT type="hidden" id="kaisitime8_10" value="">
+<INPUT type="hidden" id="syuryotime8_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_11" value="0">
+
+<INPUT type="hidden" id="kaisitime8_11" value="">
+<INPUT type="hidden" id="syuryotime8_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_12" value="0">
+
+<INPUT type="hidden" id="kaisitime8_12" value="">
+<INPUT type="hidden" id="syuryotime8_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_13" value="0">
+
+<INPUT type="hidden" id="kaisitime8_13" value="">
+<INPUT type="hidden" id="syuryotime8_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_14" value="0">
+
+<INPUT type="hidden" id="kaisitime8_14" value="">
+<INPUT type="hidden" id="syuryotime8_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_15" value="0">
+
+<INPUT type="hidden" id="kaisitime8_15" value="">
+<INPUT type="hidden" id="syuryotime8_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_16" value="0">
+
+<INPUT type="hidden" id="kaisitime8_16" value="">
+<INPUT type="hidden" id="syuryotime8_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_17" value="0">
+
+<INPUT type="hidden" id="kaisitime8_17" value="">
+<INPUT type="hidden" id="syuryotime8_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_18" value="0">
+
+<INPUT type="hidden" id="kaisitime8_18" value="">
+<INPUT type="hidden" id="syuryotime8_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_19" value="0">
+
+<INPUT type="hidden" id="kaisitime8_19" value="">
+<INPUT type="hidden" id="syuryotime8_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_20" value="0">
+
+<INPUT type="hidden" id="kaisitime8_20" value="">
+<INPUT type="hidden" id="syuryotime8_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_21" value="0">
+
+<INPUT type="hidden" id="kaisitime8_21" value="">
+<INPUT type="hidden" id="syuryotime8_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_22" value="0">
+
+<INPUT type="hidden" id="kaisitime8_22" value="">
+<INPUT type="hidden" id="syuryotime8_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_23" value="0">
+
+<INPUT type="hidden" id="kaisitime8_23" value="">
+<INPUT type="hidden" id="syuryotime8_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_24" value="0">
+
+<INPUT type="hidden" id="kaisitime8_24" value="">
+<INPUT type="hidden" id="syuryotime8_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_25" value="0">
+
+<INPUT type="hidden" id="kaisitime8_25" value="">
+<INPUT type="hidden" id="syuryotime8_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_26" value="0">
+
+<INPUT type="hidden" id="kaisitime8_26" value="">
+<INPUT type="hidden" id="syuryotime8_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_27" value="0">
+
+<INPUT type="hidden" id="kaisitime8_27" value="">
+<INPUT type="hidden" id="syuryotime8_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record8_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record9_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record9_2" value="0">
+
+<INPUT type="hidden" id="kaisitime9_2" value="09:00">
+<INPUT type="hidden" id="syuryotime9_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/17(水)  </th>
+
+
+
+
+
+
+
+					    <td id="td119_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record9_3" value="0">
+
+<INPUT type="hidden" id="kaisitime9_3" value="11:00">
+<INPUT type="hidden" id="syuryotime9_3" value="13:00">
+
+
+
+
+						<td id="td119_2" STYLE="display:"""><a><img style="cursor:pointer" src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_O.gif" alt="O" title="O" ></a></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record9_4" value="0">
+
+<INPUT type="hidden" id="kaisitime9_4" value="13:00">
+<INPUT type="hidden" id="syuryotime9_4" value="15:00">
+
+
+
+
+
+					    <td id="td119_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record9_5" value="0">
+
+<INPUT type="hidden" id="kaisitime9_5" value="15:00">
+<INPUT type="hidden" id="syuryotime9_5" value="17:00">
+
+
+
+
+
+					    <td id="td119_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record9_6" value="0">
+
+<INPUT type="hidden" id="kaisitime9_6" value="">
+<INPUT type="hidden" id="syuryotime9_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_7" value="0">
+
+<INPUT type="hidden" id="kaisitime9_7" value="">
+<INPUT type="hidden" id="syuryotime9_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_8" value="0">
+
+<INPUT type="hidden" id="kaisitime9_8" value="">
+<INPUT type="hidden" id="syuryotime9_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_9" value="0">
+
+<INPUT type="hidden" id="kaisitime9_9" value="">
+<INPUT type="hidden" id="syuryotime9_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_10" value="0">
+
+<INPUT type="hidden" id="kaisitime9_10" value="">
+<INPUT type="hidden" id="syuryotime9_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_11" value="0">
+
+<INPUT type="hidden" id="kaisitime9_11" value="">
+<INPUT type="hidden" id="syuryotime9_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_12" value="0">
+
+<INPUT type="hidden" id="kaisitime9_12" value="">
+<INPUT type="hidden" id="syuryotime9_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_13" value="0">
+
+<INPUT type="hidden" id="kaisitime9_13" value="">
+<INPUT type="hidden" id="syuryotime9_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_14" value="0">
+
+<INPUT type="hidden" id="kaisitime9_14" value="">
+<INPUT type="hidden" id="syuryotime9_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_15" value="0">
+
+<INPUT type="hidden" id="kaisitime9_15" value="">
+<INPUT type="hidden" id="syuryotime9_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_16" value="0">
+
+<INPUT type="hidden" id="kaisitime9_16" value="">
+<INPUT type="hidden" id="syuryotime9_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_17" value="0">
+
+<INPUT type="hidden" id="kaisitime9_17" value="">
+<INPUT type="hidden" id="syuryotime9_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_18" value="0">
+
+<INPUT type="hidden" id="kaisitime9_18" value="">
+<INPUT type="hidden" id="syuryotime9_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_19" value="0">
+
+<INPUT type="hidden" id="kaisitime9_19" value="">
+<INPUT type="hidden" id="syuryotime9_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_20" value="0">
+
+<INPUT type="hidden" id="kaisitime9_20" value="">
+<INPUT type="hidden" id="syuryotime9_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_21" value="0">
+
+<INPUT type="hidden" id="kaisitime9_21" value="">
+<INPUT type="hidden" id="syuryotime9_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_22" value="0">
+
+<INPUT type="hidden" id="kaisitime9_22" value="">
+<INPUT type="hidden" id="syuryotime9_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_23" value="0">
+
+<INPUT type="hidden" id="kaisitime9_23" value="">
+<INPUT type="hidden" id="syuryotime9_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_24" value="0">
+
+<INPUT type="hidden" id="kaisitime9_24" value="">
+<INPUT type="hidden" id="syuryotime9_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_25" value="0">
+
+<INPUT type="hidden" id="kaisitime9_25" value="">
+<INPUT type="hidden" id="syuryotime9_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_26" value="0">
+
+<INPUT type="hidden" id="kaisitime9_26" value="">
+<INPUT type="hidden" id="syuryotime9_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_27" value="0">
+
+<INPUT type="hidden" id="kaisitime9_27" value="">
+<INPUT type="hidden" id="syuryotime9_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record9_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record10_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record10_2" value="0">
+
+<INPUT type="hidden" id="kaisitime10_2" value="09:00">
+<INPUT type="hidden" id="syuryotime10_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/18(木)  </th>
+
+
+
+
+
+
+
+					    <td id="td1110_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record10_3" value="0">
+
+<INPUT type="hidden" id="kaisitime10_3" value="11:00">
+<INPUT type="hidden" id="syuryotime10_3" value="13:00">
+
+
+
+
+
+					    <td id="td1110_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record10_4" value="0">
+
+<INPUT type="hidden" id="kaisitime10_4" value="13:00">
+<INPUT type="hidden" id="syuryotime10_4" value="15:00">
+
+
+
+
+
+					    <td id="td1110_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record10_5" value="0">
+
+<INPUT type="hidden" id="kaisitime10_5" value="15:00">
+<INPUT type="hidden" id="syuryotime10_5" value="17:00">
+
+
+
+
+
+					    <td id="td1110_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record10_6" value="0">
+
+<INPUT type="hidden" id="kaisitime10_6" value="">
+<INPUT type="hidden" id="syuryotime10_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_7" value="0">
+
+<INPUT type="hidden" id="kaisitime10_7" value="">
+<INPUT type="hidden" id="syuryotime10_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_8" value="0">
+
+<INPUT type="hidden" id="kaisitime10_8" value="">
+<INPUT type="hidden" id="syuryotime10_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_9" value="0">
+
+<INPUT type="hidden" id="kaisitime10_9" value="">
+<INPUT type="hidden" id="syuryotime10_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_10" value="0">
+
+<INPUT type="hidden" id="kaisitime10_10" value="">
+<INPUT type="hidden" id="syuryotime10_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_11" value="0">
+
+<INPUT type="hidden" id="kaisitime10_11" value="">
+<INPUT type="hidden" id="syuryotime10_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_12" value="0">
+
+<INPUT type="hidden" id="kaisitime10_12" value="">
+<INPUT type="hidden" id="syuryotime10_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_13" value="0">
+
+<INPUT type="hidden" id="kaisitime10_13" value="">
+<INPUT type="hidden" id="syuryotime10_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_14" value="0">
+
+<INPUT type="hidden" id="kaisitime10_14" value="">
+<INPUT type="hidden" id="syuryotime10_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_15" value="0">
+
+<INPUT type="hidden" id="kaisitime10_15" value="">
+<INPUT type="hidden" id="syuryotime10_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_16" value="0">
+
+<INPUT type="hidden" id="kaisitime10_16" value="">
+<INPUT type="hidden" id="syuryotime10_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_17" value="0">
+
+<INPUT type="hidden" id="kaisitime10_17" value="">
+<INPUT type="hidden" id="syuryotime10_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_18" value="0">
+
+<INPUT type="hidden" id="kaisitime10_18" value="">
+<INPUT type="hidden" id="syuryotime10_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_19" value="0">
+
+<INPUT type="hidden" id="kaisitime10_19" value="">
+<INPUT type="hidden" id="syuryotime10_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_20" value="0">
+
+<INPUT type="hidden" id="kaisitime10_20" value="">
+<INPUT type="hidden" id="syuryotime10_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_21" value="0">
+
+<INPUT type="hidden" id="kaisitime10_21" value="">
+<INPUT type="hidden" id="syuryotime10_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_22" value="0">
+
+<INPUT type="hidden" id="kaisitime10_22" value="">
+<INPUT type="hidden" id="syuryotime10_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_23" value="0">
+
+<INPUT type="hidden" id="kaisitime10_23" value="">
+<INPUT type="hidden" id="syuryotime10_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_24" value="0">
+
+<INPUT type="hidden" id="kaisitime10_24" value="">
+<INPUT type="hidden" id="syuryotime10_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_25" value="0">
+
+<INPUT type="hidden" id="kaisitime10_25" value="">
+<INPUT type="hidden" id="syuryotime10_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_26" value="0">
+
+<INPUT type="hidden" id="kaisitime10_26" value="">
+<INPUT type="hidden" id="syuryotime10_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_27" value="0">
+
+<INPUT type="hidden" id="kaisitime10_27" value="">
+<INPUT type="hidden" id="syuryotime10_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record10_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record11_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record11_2" value="0">
+
+<INPUT type="hidden" id="kaisitime11_2" value="09:00">
+<INPUT type="hidden" id="syuryotime11_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/19(金)  </th>
+
+
+
+
+
+
+
+					    <td id="td1111_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record11_3" value="0">
+
+<INPUT type="hidden" id="kaisitime11_3" value="11:00">
+<INPUT type="hidden" id="syuryotime11_3" value="13:00">
+
+
+
+
+
+					    <td id="td1111_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record11_4" value="0">
+
+<INPUT type="hidden" id="kaisitime11_4" value="13:00">
+<INPUT type="hidden" id="syuryotime11_4" value="15:00">
+
+
+
+
+
+					    <td id="td1111_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record11_5" value="0">
+
+<INPUT type="hidden" id="kaisitime11_5" value="15:00">
+<INPUT type="hidden" id="syuryotime11_5" value="17:00">
+
+
+
+
+
+					    <td id="td1111_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record11_6" value="0">
+
+<INPUT type="hidden" id="kaisitime11_6" value="">
+<INPUT type="hidden" id="syuryotime11_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_7" value="0">
+
+<INPUT type="hidden" id="kaisitime11_7" value="">
+<INPUT type="hidden" id="syuryotime11_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_8" value="0">
+
+<INPUT type="hidden" id="kaisitime11_8" value="">
+<INPUT type="hidden" id="syuryotime11_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_9" value="0">
+
+<INPUT type="hidden" id="kaisitime11_9" value="">
+<INPUT type="hidden" id="syuryotime11_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_10" value="0">
+
+<INPUT type="hidden" id="kaisitime11_10" value="">
+<INPUT type="hidden" id="syuryotime11_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_11" value="0">
+
+<INPUT type="hidden" id="kaisitime11_11" value="">
+<INPUT type="hidden" id="syuryotime11_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_12" value="0">
+
+<INPUT type="hidden" id="kaisitime11_12" value="">
+<INPUT type="hidden" id="syuryotime11_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_13" value="0">
+
+<INPUT type="hidden" id="kaisitime11_13" value="">
+<INPUT type="hidden" id="syuryotime11_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_14" value="0">
+
+<INPUT type="hidden" id="kaisitime11_14" value="">
+<INPUT type="hidden" id="syuryotime11_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_15" value="0">
+
+<INPUT type="hidden" id="kaisitime11_15" value="">
+<INPUT type="hidden" id="syuryotime11_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_16" value="0">
+
+<INPUT type="hidden" id="kaisitime11_16" value="">
+<INPUT type="hidden" id="syuryotime11_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_17" value="0">
+
+<INPUT type="hidden" id="kaisitime11_17" value="">
+<INPUT type="hidden" id="syuryotime11_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_18" value="0">
+
+<INPUT type="hidden" id="kaisitime11_18" value="">
+<INPUT type="hidden" id="syuryotime11_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_19" value="0">
+
+<INPUT type="hidden" id="kaisitime11_19" value="">
+<INPUT type="hidden" id="syuryotime11_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_20" value="0">
+
+<INPUT type="hidden" id="kaisitime11_20" value="">
+<INPUT type="hidden" id="syuryotime11_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_21" value="0">
+
+<INPUT type="hidden" id="kaisitime11_21" value="">
+<INPUT type="hidden" id="syuryotime11_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_22" value="0">
+
+<INPUT type="hidden" id="kaisitime11_22" value="">
+<INPUT type="hidden" id="syuryotime11_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_23" value="0">
+
+<INPUT type="hidden" id="kaisitime11_23" value="">
+<INPUT type="hidden" id="syuryotime11_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_24" value="0">
+
+<INPUT type="hidden" id="kaisitime11_24" value="">
+<INPUT type="hidden" id="syuryotime11_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_25" value="0">
+
+<INPUT type="hidden" id="kaisitime11_25" value="">
+<INPUT type="hidden" id="syuryotime11_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_26" value="0">
+
+<INPUT type="hidden" id="kaisitime11_26" value="">
+<INPUT type="hidden" id="syuryotime11_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_27" value="0">
+
+<INPUT type="hidden" id="kaisitime11_27" value="">
+<INPUT type="hidden" id="syuryotime11_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record11_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record12_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record12_2" value="0">
+
+<INPUT type="hidden" id="kaisitime12_2" value="09:00">
+<INPUT type="hidden" id="syuryotime12_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/20(土)  </th>
+
+
+
+
+
+
+
+					    <td id="td1112_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record12_3" value="0">
+
+<INPUT type="hidden" id="kaisitime12_3" value="11:00">
+<INPUT type="hidden" id="syuryotime12_3" value="13:00">
+
+
+
+
+
+					    <td id="td1112_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record12_4" value="0">
+
+<INPUT type="hidden" id="kaisitime12_4" value="13:00">
+<INPUT type="hidden" id="syuryotime12_4" value="15:00">
+
+
+
+
+
+					    <td id="td1112_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record12_5" value="0">
+
+<INPUT type="hidden" id="kaisitime12_5" value="15:00">
+<INPUT type="hidden" id="syuryotime12_5" value="17:00">
+
+
+
+
+
+					    <td id="td1112_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record12_6" value="0">
+
+<INPUT type="hidden" id="kaisitime12_6" value="">
+<INPUT type="hidden" id="syuryotime12_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_7" value="0">
+
+<INPUT type="hidden" id="kaisitime12_7" value="">
+<INPUT type="hidden" id="syuryotime12_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_8" value="0">
+
+<INPUT type="hidden" id="kaisitime12_8" value="">
+<INPUT type="hidden" id="syuryotime12_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_9" value="0">
+
+<INPUT type="hidden" id="kaisitime12_9" value="">
+<INPUT type="hidden" id="syuryotime12_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_10" value="0">
+
+<INPUT type="hidden" id="kaisitime12_10" value="">
+<INPUT type="hidden" id="syuryotime12_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_11" value="0">
+
+<INPUT type="hidden" id="kaisitime12_11" value="">
+<INPUT type="hidden" id="syuryotime12_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_12" value="0">
+
+<INPUT type="hidden" id="kaisitime12_12" value="">
+<INPUT type="hidden" id="syuryotime12_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_13" value="0">
+
+<INPUT type="hidden" id="kaisitime12_13" value="">
+<INPUT type="hidden" id="syuryotime12_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_14" value="0">
+
+<INPUT type="hidden" id="kaisitime12_14" value="">
+<INPUT type="hidden" id="syuryotime12_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_15" value="0">
+
+<INPUT type="hidden" id="kaisitime12_15" value="">
+<INPUT type="hidden" id="syuryotime12_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_16" value="0">
+
+<INPUT type="hidden" id="kaisitime12_16" value="">
+<INPUT type="hidden" id="syuryotime12_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_17" value="0">
+
+<INPUT type="hidden" id="kaisitime12_17" value="">
+<INPUT type="hidden" id="syuryotime12_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_18" value="0">
+
+<INPUT type="hidden" id="kaisitime12_18" value="">
+<INPUT type="hidden" id="syuryotime12_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_19" value="0">
+
+<INPUT type="hidden" id="kaisitime12_19" value="">
+<INPUT type="hidden" id="syuryotime12_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_20" value="0">
+
+<INPUT type="hidden" id="kaisitime12_20" value="">
+<INPUT type="hidden" id="syuryotime12_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_21" value="0">
+
+<INPUT type="hidden" id="kaisitime12_21" value="">
+<INPUT type="hidden" id="syuryotime12_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_22" value="0">
+
+<INPUT type="hidden" id="kaisitime12_22" value="">
+<INPUT type="hidden" id="syuryotime12_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_23" value="0">
+
+<INPUT type="hidden" id="kaisitime12_23" value="">
+<INPUT type="hidden" id="syuryotime12_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_24" value="0">
+
+<INPUT type="hidden" id="kaisitime12_24" value="">
+<INPUT type="hidden" id="syuryotime12_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_25" value="0">
+
+<INPUT type="hidden" id="kaisitime12_25" value="">
+<INPUT type="hidden" id="syuryotime12_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_26" value="0">
+
+<INPUT type="hidden" id="kaisitime12_26" value="">
+<INPUT type="hidden" id="syuryotime12_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_27" value="0">
+
+<INPUT type="hidden" id="kaisitime12_27" value="">
+<INPUT type="hidden" id="syuryotime12_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record12_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record13_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record13_2" value="0">
+
+<INPUT type="hidden" id="kaisitime13_2" value="09:00">
+<INPUT type="hidden" id="syuryotime13_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/21(日)  </th>
+
+
+
+
+
+
+
+					    <td id="td1113_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record13_3" value="0">
+
+<INPUT type="hidden" id="kaisitime13_3" value="11:00">
+<INPUT type="hidden" id="syuryotime13_3" value="13:00">
+
+
+
+
+
+					    <td id="td1113_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record13_4" value="0">
+
+<INPUT type="hidden" id="kaisitime13_4" value="13:00">
+<INPUT type="hidden" id="syuryotime13_4" value="15:00">
+
+
+
+
+
+					    <td id="td1113_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record13_5" value="0">
+
+<INPUT type="hidden" id="kaisitime13_5" value="15:00">
+<INPUT type="hidden" id="syuryotime13_5" value="17:00">
+
+
+
+
+
+					    <td id="td1113_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record13_6" value="0">
+
+<INPUT type="hidden" id="kaisitime13_6" value="">
+<INPUT type="hidden" id="syuryotime13_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_7" value="0">
+
+<INPUT type="hidden" id="kaisitime13_7" value="">
+<INPUT type="hidden" id="syuryotime13_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_8" value="0">
+
+<INPUT type="hidden" id="kaisitime13_8" value="">
+<INPUT type="hidden" id="syuryotime13_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_9" value="0">
+
+<INPUT type="hidden" id="kaisitime13_9" value="">
+<INPUT type="hidden" id="syuryotime13_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_10" value="0">
+
+<INPUT type="hidden" id="kaisitime13_10" value="">
+<INPUT type="hidden" id="syuryotime13_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_11" value="0">
+
+<INPUT type="hidden" id="kaisitime13_11" value="">
+<INPUT type="hidden" id="syuryotime13_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_12" value="0">
+
+<INPUT type="hidden" id="kaisitime13_12" value="">
+<INPUT type="hidden" id="syuryotime13_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_13" value="0">
+
+<INPUT type="hidden" id="kaisitime13_13" value="">
+<INPUT type="hidden" id="syuryotime13_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_14" value="0">
+
+<INPUT type="hidden" id="kaisitime13_14" value="">
+<INPUT type="hidden" id="syuryotime13_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_15" value="0">
+
+<INPUT type="hidden" id="kaisitime13_15" value="">
+<INPUT type="hidden" id="syuryotime13_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_16" value="0">
+
+<INPUT type="hidden" id="kaisitime13_16" value="">
+<INPUT type="hidden" id="syuryotime13_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_17" value="0">
+
+<INPUT type="hidden" id="kaisitime13_17" value="">
+<INPUT type="hidden" id="syuryotime13_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_18" value="0">
+
+<INPUT type="hidden" id="kaisitime13_18" value="">
+<INPUT type="hidden" id="syuryotime13_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_19" value="0">
+
+<INPUT type="hidden" id="kaisitime13_19" value="">
+<INPUT type="hidden" id="syuryotime13_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_20" value="0">
+
+<INPUT type="hidden" id="kaisitime13_20" value="">
+<INPUT type="hidden" id="syuryotime13_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_21" value="0">
+
+<INPUT type="hidden" id="kaisitime13_21" value="">
+<INPUT type="hidden" id="syuryotime13_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_22" value="0">
+
+<INPUT type="hidden" id="kaisitime13_22" value="">
+<INPUT type="hidden" id="syuryotime13_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_23" value="0">
+
+<INPUT type="hidden" id="kaisitime13_23" value="">
+<INPUT type="hidden" id="syuryotime13_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_24" value="0">
+
+<INPUT type="hidden" id="kaisitime13_24" value="">
+<INPUT type="hidden" id="syuryotime13_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_25" value="0">
+
+<INPUT type="hidden" id="kaisitime13_25" value="">
+<INPUT type="hidden" id="syuryotime13_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_26" value="0">
+
+<INPUT type="hidden" id="kaisitime13_26" value="">
+<INPUT type="hidden" id="syuryotime13_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_27" value="0">
+
+<INPUT type="hidden" id="kaisitime13_27" value="">
+<INPUT type="hidden" id="syuryotime13_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record13_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record14_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record14_2" value="0">
+
+<INPUT type="hidden" id="kaisitime14_2" value="09:00">
+<INPUT type="hidden" id="syuryotime14_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/22(月)  </th>
+
+
+
+
+
+
+
+					    <td id="td1114_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record14_3" value="0">
+
+<INPUT type="hidden" id="kaisitime14_3" value="11:00">
+<INPUT type="hidden" id="syuryotime14_3" value="13:00">
+
+
+
+
+
+					    <td id="td1114_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record14_4" value="0">
+
+<INPUT type="hidden" id="kaisitime14_4" value="13:00">
+<INPUT type="hidden" id="syuryotime14_4" value="15:00">
+
+
+
+
+
+					    <td id="td1114_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record14_5" value="0">
+
+<INPUT type="hidden" id="kaisitime14_5" value="15:00">
+<INPUT type="hidden" id="syuryotime14_5" value="17:00">
+
+
+
+
+
+					    <td id="td1114_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record14_6" value="0">
+
+<INPUT type="hidden" id="kaisitime14_6" value="">
+<INPUT type="hidden" id="syuryotime14_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_7" value="0">
+
+<INPUT type="hidden" id="kaisitime14_7" value="">
+<INPUT type="hidden" id="syuryotime14_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_8" value="0">
+
+<INPUT type="hidden" id="kaisitime14_8" value="">
+<INPUT type="hidden" id="syuryotime14_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_9" value="0">
+
+<INPUT type="hidden" id="kaisitime14_9" value="">
+<INPUT type="hidden" id="syuryotime14_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_10" value="0">
+
+<INPUT type="hidden" id="kaisitime14_10" value="">
+<INPUT type="hidden" id="syuryotime14_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_11" value="0">
+
+<INPUT type="hidden" id="kaisitime14_11" value="">
+<INPUT type="hidden" id="syuryotime14_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_12" value="0">
+
+<INPUT type="hidden" id="kaisitime14_12" value="">
+<INPUT type="hidden" id="syuryotime14_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_13" value="0">
+
+<INPUT type="hidden" id="kaisitime14_13" value="">
+<INPUT type="hidden" id="syuryotime14_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_14" value="0">
+
+<INPUT type="hidden" id="kaisitime14_14" value="">
+<INPUT type="hidden" id="syuryotime14_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_15" value="0">
+
+<INPUT type="hidden" id="kaisitime14_15" value="">
+<INPUT type="hidden" id="syuryotime14_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_16" value="0">
+
+<INPUT type="hidden" id="kaisitime14_16" value="">
+<INPUT type="hidden" id="syuryotime14_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_17" value="0">
+
+<INPUT type="hidden" id="kaisitime14_17" value="">
+<INPUT type="hidden" id="syuryotime14_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_18" value="0">
+
+<INPUT type="hidden" id="kaisitime14_18" value="">
+<INPUT type="hidden" id="syuryotime14_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_19" value="0">
+
+<INPUT type="hidden" id="kaisitime14_19" value="">
+<INPUT type="hidden" id="syuryotime14_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_20" value="0">
+
+<INPUT type="hidden" id="kaisitime14_20" value="">
+<INPUT type="hidden" id="syuryotime14_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_21" value="0">
+
+<INPUT type="hidden" id="kaisitime14_21" value="">
+<INPUT type="hidden" id="syuryotime14_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_22" value="0">
+
+<INPUT type="hidden" id="kaisitime14_22" value="">
+<INPUT type="hidden" id="syuryotime14_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_23" value="0">
+
+<INPUT type="hidden" id="kaisitime14_23" value="">
+<INPUT type="hidden" id="syuryotime14_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_24" value="0">
+
+<INPUT type="hidden" id="kaisitime14_24" value="">
+<INPUT type="hidden" id="syuryotime14_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_25" value="0">
+
+<INPUT type="hidden" id="kaisitime14_25" value="">
+<INPUT type="hidden" id="syuryotime14_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_26" value="0">
+
+<INPUT type="hidden" id="kaisitime14_26" value="">
+<INPUT type="hidden" id="syuryotime14_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_27" value="0">
+
+<INPUT type="hidden" id="kaisitime14_27" value="">
+<INPUT type="hidden" id="syuryotime14_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record14_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record15_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record15_2" value="0">
+
+<INPUT type="hidden" id="kaisitime15_2" value="09:00">
+<INPUT type="hidden" id="syuryotime15_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/23(火)  </th>
+
+
+
+
+
+
+
+					    <td id="td1115_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record15_3" value="0">
+
+<INPUT type="hidden" id="kaisitime15_3" value="11:00">
+<INPUT type="hidden" id="syuryotime15_3" value="13:00">
+
+
+
+
+
+					    <td id="td1115_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record15_4" value="0">
+
+<INPUT type="hidden" id="kaisitime15_4" value="13:00">
+<INPUT type="hidden" id="syuryotime15_4" value="15:00">
+
+
+
+
+
+					    <td id="td1115_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record15_5" value="0">
+
+<INPUT type="hidden" id="kaisitime15_5" value="15:00">
+<INPUT type="hidden" id="syuryotime15_5" value="17:00">
+
+
+
+
+
+					    <td id="td1115_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record15_6" value="0">
+
+<INPUT type="hidden" id="kaisitime15_6" value="">
+<INPUT type="hidden" id="syuryotime15_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_7" value="0">
+
+<INPUT type="hidden" id="kaisitime15_7" value="">
+<INPUT type="hidden" id="syuryotime15_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_8" value="0">
+
+<INPUT type="hidden" id="kaisitime15_8" value="">
+<INPUT type="hidden" id="syuryotime15_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_9" value="0">
+
+<INPUT type="hidden" id="kaisitime15_9" value="">
+<INPUT type="hidden" id="syuryotime15_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_10" value="0">
+
+<INPUT type="hidden" id="kaisitime15_10" value="">
+<INPUT type="hidden" id="syuryotime15_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_11" value="0">
+
+<INPUT type="hidden" id="kaisitime15_11" value="">
+<INPUT type="hidden" id="syuryotime15_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_12" value="0">
+
+<INPUT type="hidden" id="kaisitime15_12" value="">
+<INPUT type="hidden" id="syuryotime15_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_13" value="0">
+
+<INPUT type="hidden" id="kaisitime15_13" value="">
+<INPUT type="hidden" id="syuryotime15_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_14" value="0">
+
+<INPUT type="hidden" id="kaisitime15_14" value="">
+<INPUT type="hidden" id="syuryotime15_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_15" value="0">
+
+<INPUT type="hidden" id="kaisitime15_15" value="">
+<INPUT type="hidden" id="syuryotime15_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_16" value="0">
+
+<INPUT type="hidden" id="kaisitime15_16" value="">
+<INPUT type="hidden" id="syuryotime15_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_17" value="0">
+
+<INPUT type="hidden" id="kaisitime15_17" value="">
+<INPUT type="hidden" id="syuryotime15_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_18" value="0">
+
+<INPUT type="hidden" id="kaisitime15_18" value="">
+<INPUT type="hidden" id="syuryotime15_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_19" value="0">
+
+<INPUT type="hidden" id="kaisitime15_19" value="">
+<INPUT type="hidden" id="syuryotime15_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_20" value="0">
+
+<INPUT type="hidden" id="kaisitime15_20" value="">
+<INPUT type="hidden" id="syuryotime15_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_21" value="0">
+
+<INPUT type="hidden" id="kaisitime15_21" value="">
+<INPUT type="hidden" id="syuryotime15_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_22" value="0">
+
+<INPUT type="hidden" id="kaisitime15_22" value="">
+<INPUT type="hidden" id="syuryotime15_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_23" value="0">
+
+<INPUT type="hidden" id="kaisitime15_23" value="">
+<INPUT type="hidden" id="syuryotime15_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_24" value="0">
+
+<INPUT type="hidden" id="kaisitime15_24" value="">
+<INPUT type="hidden" id="syuryotime15_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_25" value="0">
+
+<INPUT type="hidden" id="kaisitime15_25" value="">
+<INPUT type="hidden" id="syuryotime15_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_26" value="0">
+
+<INPUT type="hidden" id="kaisitime15_26" value="">
+<INPUT type="hidden" id="syuryotime15_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_27" value="0">
+
+<INPUT type="hidden" id="kaisitime15_27" value="">
+<INPUT type="hidden" id="syuryotime15_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record15_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record16_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record16_2" value="0">
+
+<INPUT type="hidden" id="kaisitime16_2" value="09:00">
+<INPUT type="hidden" id="syuryotime16_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/24(水)  </th>
+
+
+
+
+
+
+
+					    <td id="td1116_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record16_3" value="0">
+
+<INPUT type="hidden" id="kaisitime16_3" value="11:00">
+<INPUT type="hidden" id="syuryotime16_3" value="13:00">
+
+
+
+
+
+					    <td id="td1116_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record16_4" value="0">
+
+<INPUT type="hidden" id="kaisitime16_4" value="13:00">
+<INPUT type="hidden" id="syuryotime16_4" value="15:00">
+
+
+
+
+
+					    <td id="td1116_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record16_5" value="0">
+
+<INPUT type="hidden" id="kaisitime16_5" value="15:00">
+<INPUT type="hidden" id="syuryotime16_5" value="17:00">
+
+
+
+
+
+					    <td id="td1116_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record16_6" value="0">
+
+<INPUT type="hidden" id="kaisitime16_6" value="">
+<INPUT type="hidden" id="syuryotime16_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_7" value="0">
+
+<INPUT type="hidden" id="kaisitime16_7" value="">
+<INPUT type="hidden" id="syuryotime16_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_8" value="0">
+
+<INPUT type="hidden" id="kaisitime16_8" value="">
+<INPUT type="hidden" id="syuryotime16_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_9" value="0">
+
+<INPUT type="hidden" id="kaisitime16_9" value="">
+<INPUT type="hidden" id="syuryotime16_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_10" value="0">
+
+<INPUT type="hidden" id="kaisitime16_10" value="">
+<INPUT type="hidden" id="syuryotime16_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_11" value="0">
+
+<INPUT type="hidden" id="kaisitime16_11" value="">
+<INPUT type="hidden" id="syuryotime16_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_12" value="0">
+
+<INPUT type="hidden" id="kaisitime16_12" value="">
+<INPUT type="hidden" id="syuryotime16_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_13" value="0">
+
+<INPUT type="hidden" id="kaisitime16_13" value="">
+<INPUT type="hidden" id="syuryotime16_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_14" value="0">
+
+<INPUT type="hidden" id="kaisitime16_14" value="">
+<INPUT type="hidden" id="syuryotime16_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_15" value="0">
+
+<INPUT type="hidden" id="kaisitime16_15" value="">
+<INPUT type="hidden" id="syuryotime16_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_16" value="0">
+
+<INPUT type="hidden" id="kaisitime16_16" value="">
+<INPUT type="hidden" id="syuryotime16_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_17" value="0">
+
+<INPUT type="hidden" id="kaisitime16_17" value="">
+<INPUT type="hidden" id="syuryotime16_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_18" value="0">
+
+<INPUT type="hidden" id="kaisitime16_18" value="">
+<INPUT type="hidden" id="syuryotime16_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_19" value="0">
+
+<INPUT type="hidden" id="kaisitime16_19" value="">
+<INPUT type="hidden" id="syuryotime16_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_20" value="0">
+
+<INPUT type="hidden" id="kaisitime16_20" value="">
+<INPUT type="hidden" id="syuryotime16_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_21" value="0">
+
+<INPUT type="hidden" id="kaisitime16_21" value="">
+<INPUT type="hidden" id="syuryotime16_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_22" value="0">
+
+<INPUT type="hidden" id="kaisitime16_22" value="">
+<INPUT type="hidden" id="syuryotime16_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_23" value="0">
+
+<INPUT type="hidden" id="kaisitime16_23" value="">
+<INPUT type="hidden" id="syuryotime16_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_24" value="0">
+
+<INPUT type="hidden" id="kaisitime16_24" value="">
+<INPUT type="hidden" id="syuryotime16_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_25" value="0">
+
+<INPUT type="hidden" id="kaisitime16_25" value="">
+<INPUT type="hidden" id="syuryotime16_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_26" value="0">
+
+<INPUT type="hidden" id="kaisitime16_26" value="">
+<INPUT type="hidden" id="syuryotime16_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_27" value="0">
+
+<INPUT type="hidden" id="kaisitime16_27" value="">
+<INPUT type="hidden" id="syuryotime16_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record16_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record17_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record17_2" value="0">
+
+<INPUT type="hidden" id="kaisitime17_2" value="09:00">
+<INPUT type="hidden" id="syuryotime17_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/25(木)  </th>
+
+
+
+
+
+
+
+					    <td id="td1117_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record17_3" value="0">
+
+<INPUT type="hidden" id="kaisitime17_3" value="11:00">
+<INPUT type="hidden" id="syuryotime17_3" value="13:00">
+
+
+
+
+
+					    <td id="td1117_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record17_4" value="0">
+
+<INPUT type="hidden" id="kaisitime17_4" value="13:00">
+<INPUT type="hidden" id="syuryotime17_4" value="15:00">
+
+
+
+
+
+					    <td id="td1117_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record17_5" value="0">
+
+<INPUT type="hidden" id="kaisitime17_5" value="15:00">
+<INPUT type="hidden" id="syuryotime17_5" value="17:00">
+
+
+
+
+
+					    <td id="td1117_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record17_6" value="0">
+
+<INPUT type="hidden" id="kaisitime17_6" value="">
+<INPUT type="hidden" id="syuryotime17_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_7" value="0">
+
+<INPUT type="hidden" id="kaisitime17_7" value="">
+<INPUT type="hidden" id="syuryotime17_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_8" value="0">
+
+<INPUT type="hidden" id="kaisitime17_8" value="">
+<INPUT type="hidden" id="syuryotime17_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_9" value="0">
+
+<INPUT type="hidden" id="kaisitime17_9" value="">
+<INPUT type="hidden" id="syuryotime17_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_10" value="0">
+
+<INPUT type="hidden" id="kaisitime17_10" value="">
+<INPUT type="hidden" id="syuryotime17_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_11" value="0">
+
+<INPUT type="hidden" id="kaisitime17_11" value="">
+<INPUT type="hidden" id="syuryotime17_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_12" value="0">
+
+<INPUT type="hidden" id="kaisitime17_12" value="">
+<INPUT type="hidden" id="syuryotime17_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_13" value="0">
+
+<INPUT type="hidden" id="kaisitime17_13" value="">
+<INPUT type="hidden" id="syuryotime17_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_14" value="0">
+
+<INPUT type="hidden" id="kaisitime17_14" value="">
+<INPUT type="hidden" id="syuryotime17_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_15" value="0">
+
+<INPUT type="hidden" id="kaisitime17_15" value="">
+<INPUT type="hidden" id="syuryotime17_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_16" value="0">
+
+<INPUT type="hidden" id="kaisitime17_16" value="">
+<INPUT type="hidden" id="syuryotime17_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_17" value="0">
+
+<INPUT type="hidden" id="kaisitime17_17" value="">
+<INPUT type="hidden" id="syuryotime17_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_18" value="0">
+
+<INPUT type="hidden" id="kaisitime17_18" value="">
+<INPUT type="hidden" id="syuryotime17_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_19" value="0">
+
+<INPUT type="hidden" id="kaisitime17_19" value="">
+<INPUT type="hidden" id="syuryotime17_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_20" value="0">
+
+<INPUT type="hidden" id="kaisitime17_20" value="">
+<INPUT type="hidden" id="syuryotime17_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_21" value="0">
+
+<INPUT type="hidden" id="kaisitime17_21" value="">
+<INPUT type="hidden" id="syuryotime17_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_22" value="0">
+
+<INPUT type="hidden" id="kaisitime17_22" value="">
+<INPUT type="hidden" id="syuryotime17_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_23" value="0">
+
+<INPUT type="hidden" id="kaisitime17_23" value="">
+<INPUT type="hidden" id="syuryotime17_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_24" value="0">
+
+<INPUT type="hidden" id="kaisitime17_24" value="">
+<INPUT type="hidden" id="syuryotime17_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_25" value="0">
+
+<INPUT type="hidden" id="kaisitime17_25" value="">
+<INPUT type="hidden" id="syuryotime17_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_26" value="0">
+
+<INPUT type="hidden" id="kaisitime17_26" value="">
+<INPUT type="hidden" id="syuryotime17_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_27" value="0">
+
+<INPUT type="hidden" id="kaisitime17_27" value="">
+<INPUT type="hidden" id="syuryotime17_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record17_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record18_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record18_2" value="0">
+
+<INPUT type="hidden" id="kaisitime18_2" value="09:00">
+<INPUT type="hidden" id="syuryotime18_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/26(金)  </th>
+
+
+
+
+
+
+
+					    <td id="td1118_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record18_3" value="0">
+
+<INPUT type="hidden" id="kaisitime18_3" value="11:00">
+<INPUT type="hidden" id="syuryotime18_3" value="13:00">
+
+
+
+
+
+					    <td id="td1118_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record18_4" value="0">
+
+<INPUT type="hidden" id="kaisitime18_4" value="13:00">
+<INPUT type="hidden" id="syuryotime18_4" value="15:00">
+
+
+
+
+
+					    <td id="td1118_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record18_5" value="0">
+
+<INPUT type="hidden" id="kaisitime18_5" value="15:00">
+<INPUT type="hidden" id="syuryotime18_5" value="17:00">
+
+
+
+
+
+					    <td id="td1118_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record18_6" value="0">
+
+<INPUT type="hidden" id="kaisitime18_6" value="">
+<INPUT type="hidden" id="syuryotime18_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_7" value="0">
+
+<INPUT type="hidden" id="kaisitime18_7" value="">
+<INPUT type="hidden" id="syuryotime18_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_8" value="0">
+
+<INPUT type="hidden" id="kaisitime18_8" value="">
+<INPUT type="hidden" id="syuryotime18_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_9" value="0">
+
+<INPUT type="hidden" id="kaisitime18_9" value="">
+<INPUT type="hidden" id="syuryotime18_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_10" value="0">
+
+<INPUT type="hidden" id="kaisitime18_10" value="">
+<INPUT type="hidden" id="syuryotime18_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_11" value="0">
+
+<INPUT type="hidden" id="kaisitime18_11" value="">
+<INPUT type="hidden" id="syuryotime18_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_12" value="0">
+
+<INPUT type="hidden" id="kaisitime18_12" value="">
+<INPUT type="hidden" id="syuryotime18_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_13" value="0">
+
+<INPUT type="hidden" id="kaisitime18_13" value="">
+<INPUT type="hidden" id="syuryotime18_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_14" value="0">
+
+<INPUT type="hidden" id="kaisitime18_14" value="">
+<INPUT type="hidden" id="syuryotime18_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_15" value="0">
+
+<INPUT type="hidden" id="kaisitime18_15" value="">
+<INPUT type="hidden" id="syuryotime18_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_16" value="0">
+
+<INPUT type="hidden" id="kaisitime18_16" value="">
+<INPUT type="hidden" id="syuryotime18_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_17" value="0">
+
+<INPUT type="hidden" id="kaisitime18_17" value="">
+<INPUT type="hidden" id="syuryotime18_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_18" value="0">
+
+<INPUT type="hidden" id="kaisitime18_18" value="">
+<INPUT type="hidden" id="syuryotime18_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_19" value="0">
+
+<INPUT type="hidden" id="kaisitime18_19" value="">
+<INPUT type="hidden" id="syuryotime18_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_20" value="0">
+
+<INPUT type="hidden" id="kaisitime18_20" value="">
+<INPUT type="hidden" id="syuryotime18_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_21" value="0">
+
+<INPUT type="hidden" id="kaisitime18_21" value="">
+<INPUT type="hidden" id="syuryotime18_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_22" value="0">
+
+<INPUT type="hidden" id="kaisitime18_22" value="">
+<INPUT type="hidden" id="syuryotime18_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_23" value="0">
+
+<INPUT type="hidden" id="kaisitime18_23" value="">
+<INPUT type="hidden" id="syuryotime18_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_24" value="0">
+
+<INPUT type="hidden" id="kaisitime18_24" value="">
+<INPUT type="hidden" id="syuryotime18_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_25" value="0">
+
+<INPUT type="hidden" id="kaisitime18_25" value="">
+<INPUT type="hidden" id="syuryotime18_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_26" value="0">
+
+<INPUT type="hidden" id="kaisitime18_26" value="">
+<INPUT type="hidden" id="syuryotime18_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_27" value="0">
+
+<INPUT type="hidden" id="kaisitime18_27" value="">
+<INPUT type="hidden" id="syuryotime18_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record18_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record19_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record19_2" value="0">
+
+<INPUT type="hidden" id="kaisitime19_2" value="09:00">
+<INPUT type="hidden" id="syuryotime19_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/27(土)  </th>
+
+
+
+
+
+
+
+					    <td id="td1119_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record19_3" value="0">
+
+<INPUT type="hidden" id="kaisitime19_3" value="11:00">
+<INPUT type="hidden" id="syuryotime19_3" value="13:00">
+
+
+
+
+
+					    <td id="td1119_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record19_4" value="0">
+
+<INPUT type="hidden" id="kaisitime19_4" value="13:00">
+<INPUT type="hidden" id="syuryotime19_4" value="15:00">
+
+
+
+
+
+					    <td id="td1119_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record19_5" value="0">
+
+<INPUT type="hidden" id="kaisitime19_5" value="15:00">
+<INPUT type="hidden" id="syuryotime19_5" value="17:00">
+
+
+
+
+
+					    <td id="td1119_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record19_6" value="0">
+
+<INPUT type="hidden" id="kaisitime19_6" value="">
+<INPUT type="hidden" id="syuryotime19_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_7" value="0">
+
+<INPUT type="hidden" id="kaisitime19_7" value="">
+<INPUT type="hidden" id="syuryotime19_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_8" value="0">
+
+<INPUT type="hidden" id="kaisitime19_8" value="">
+<INPUT type="hidden" id="syuryotime19_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_9" value="0">
+
+<INPUT type="hidden" id="kaisitime19_9" value="">
+<INPUT type="hidden" id="syuryotime19_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_10" value="0">
+
+<INPUT type="hidden" id="kaisitime19_10" value="">
+<INPUT type="hidden" id="syuryotime19_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_11" value="0">
+
+<INPUT type="hidden" id="kaisitime19_11" value="">
+<INPUT type="hidden" id="syuryotime19_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_12" value="0">
+
+<INPUT type="hidden" id="kaisitime19_12" value="">
+<INPUT type="hidden" id="syuryotime19_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_13" value="0">
+
+<INPUT type="hidden" id="kaisitime19_13" value="">
+<INPUT type="hidden" id="syuryotime19_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_14" value="0">
+
+<INPUT type="hidden" id="kaisitime19_14" value="">
+<INPUT type="hidden" id="syuryotime19_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_15" value="0">
+
+<INPUT type="hidden" id="kaisitime19_15" value="">
+<INPUT type="hidden" id="syuryotime19_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_16" value="0">
+
+<INPUT type="hidden" id="kaisitime19_16" value="">
+<INPUT type="hidden" id="syuryotime19_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_17" value="0">
+
+<INPUT type="hidden" id="kaisitime19_17" value="">
+<INPUT type="hidden" id="syuryotime19_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_18" value="0">
+
+<INPUT type="hidden" id="kaisitime19_18" value="">
+<INPUT type="hidden" id="syuryotime19_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_19" value="0">
+
+<INPUT type="hidden" id="kaisitime19_19" value="">
+<INPUT type="hidden" id="syuryotime19_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_20" value="0">
+
+<INPUT type="hidden" id="kaisitime19_20" value="">
+<INPUT type="hidden" id="syuryotime19_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_21" value="0">
+
+<INPUT type="hidden" id="kaisitime19_21" value="">
+<INPUT type="hidden" id="syuryotime19_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_22" value="0">
+
+<INPUT type="hidden" id="kaisitime19_22" value="">
+<INPUT type="hidden" id="syuryotime19_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_23" value="0">
+
+<INPUT type="hidden" id="kaisitime19_23" value="">
+<INPUT type="hidden" id="syuryotime19_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_24" value="0">
+
+<INPUT type="hidden" id="kaisitime19_24" value="">
+<INPUT type="hidden" id="syuryotime19_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_25" value="0">
+
+<INPUT type="hidden" id="kaisitime19_25" value="">
+<INPUT type="hidden" id="syuryotime19_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_26" value="0">
+
+<INPUT type="hidden" id="kaisitime19_26" value="">
+<INPUT type="hidden" id="syuryotime19_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_27" value="0">
+
+<INPUT type="hidden" id="kaisitime19_27" value="">
+<INPUT type="hidden" id="syuryotime19_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record19_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record20_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record20_2" value="0">
+
+<INPUT type="hidden" id="kaisitime20_2" value="09:00">
+<INPUT type="hidden" id="syuryotime20_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/28(日)  </th>
+
+
+
+
+
+
+
+					    <td id="td1120_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record20_3" value="0">
+
+<INPUT type="hidden" id="kaisitime20_3" value="11:00">
+<INPUT type="hidden" id="syuryotime20_3" value="13:00">
+
+
+
+
+
+					    <td id="td1120_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record20_4" value="0">
+
+<INPUT type="hidden" id="kaisitime20_4" value="13:00">
+<INPUT type="hidden" id="syuryotime20_4" value="15:00">
+
+
+
+
+
+					    <td id="td1120_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record20_5" value="0">
+
+<INPUT type="hidden" id="kaisitime20_5" value="15:00">
+<INPUT type="hidden" id="syuryotime20_5" value="17:00">
+
+
+
+
+
+					    <td id="td1120_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record20_6" value="0">
+
+<INPUT type="hidden" id="kaisitime20_6" value="">
+<INPUT type="hidden" id="syuryotime20_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_7" value="0">
+
+<INPUT type="hidden" id="kaisitime20_7" value="">
+<INPUT type="hidden" id="syuryotime20_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_8" value="0">
+
+<INPUT type="hidden" id="kaisitime20_8" value="">
+<INPUT type="hidden" id="syuryotime20_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_9" value="0">
+
+<INPUT type="hidden" id="kaisitime20_9" value="">
+<INPUT type="hidden" id="syuryotime20_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_10" value="0">
+
+<INPUT type="hidden" id="kaisitime20_10" value="">
+<INPUT type="hidden" id="syuryotime20_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_11" value="0">
+
+<INPUT type="hidden" id="kaisitime20_11" value="">
+<INPUT type="hidden" id="syuryotime20_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_12" value="0">
+
+<INPUT type="hidden" id="kaisitime20_12" value="">
+<INPUT type="hidden" id="syuryotime20_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_13" value="0">
+
+<INPUT type="hidden" id="kaisitime20_13" value="">
+<INPUT type="hidden" id="syuryotime20_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_14" value="0">
+
+<INPUT type="hidden" id="kaisitime20_14" value="">
+<INPUT type="hidden" id="syuryotime20_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_15" value="0">
+
+<INPUT type="hidden" id="kaisitime20_15" value="">
+<INPUT type="hidden" id="syuryotime20_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_16" value="0">
+
+<INPUT type="hidden" id="kaisitime20_16" value="">
+<INPUT type="hidden" id="syuryotime20_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_17" value="0">
+
+<INPUT type="hidden" id="kaisitime20_17" value="">
+<INPUT type="hidden" id="syuryotime20_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_18" value="0">
+
+<INPUT type="hidden" id="kaisitime20_18" value="">
+<INPUT type="hidden" id="syuryotime20_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_19" value="0">
+
+<INPUT type="hidden" id="kaisitime20_19" value="">
+<INPUT type="hidden" id="syuryotime20_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_20" value="0">
+
+<INPUT type="hidden" id="kaisitime20_20" value="">
+<INPUT type="hidden" id="syuryotime20_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_21" value="0">
+
+<INPUT type="hidden" id="kaisitime20_21" value="">
+<INPUT type="hidden" id="syuryotime20_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_22" value="0">
+
+<INPUT type="hidden" id="kaisitime20_22" value="">
+<INPUT type="hidden" id="syuryotime20_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_23" value="0">
+
+<INPUT type="hidden" id="kaisitime20_23" value="">
+<INPUT type="hidden" id="syuryotime20_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_24" value="0">
+
+<INPUT type="hidden" id="kaisitime20_24" value="">
+<INPUT type="hidden" id="syuryotime20_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_25" value="0">
+
+<INPUT type="hidden" id="kaisitime20_25" value="">
+<INPUT type="hidden" id="syuryotime20_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_26" value="0">
+
+<INPUT type="hidden" id="kaisitime20_26" value="">
+<INPUT type="hidden" id="syuryotime20_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_27" value="0">
+
+<INPUT type="hidden" id="kaisitime20_27" value="">
+<INPUT type="hidden" id="syuryotime20_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record20_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record21_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record21_2" value="0">
+
+<INPUT type="hidden" id="kaisitime21_2" value="09:00">
+<INPUT type="hidden" id="syuryotime21_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/29(月)  </th>
+
+
+
+
+
+
+
+					    <td id="td1121_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record21_3" value="0">
+
+<INPUT type="hidden" id="kaisitime21_3" value="11:00">
+<INPUT type="hidden" id="syuryotime21_3" value="13:00">
+
+
+
+
+
+					    <td id="td1121_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record21_4" value="0">
+
+<INPUT type="hidden" id="kaisitime21_4" value="13:00">
+<INPUT type="hidden" id="syuryotime21_4" value="15:00">
+
+
+
+
+
+					    <td id="td1121_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record21_5" value="0">
+
+<INPUT type="hidden" id="kaisitime21_5" value="15:00">
+<INPUT type="hidden" id="syuryotime21_5" value="17:00">
+
+
+
+
+
+					    <td id="td1121_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record21_6" value="0">
+
+<INPUT type="hidden" id="kaisitime21_6" value="">
+<INPUT type="hidden" id="syuryotime21_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_7" value="0">
+
+<INPUT type="hidden" id="kaisitime21_7" value="">
+<INPUT type="hidden" id="syuryotime21_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_8" value="0">
+
+<INPUT type="hidden" id="kaisitime21_8" value="">
+<INPUT type="hidden" id="syuryotime21_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_9" value="0">
+
+<INPUT type="hidden" id="kaisitime21_9" value="">
+<INPUT type="hidden" id="syuryotime21_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_10" value="0">
+
+<INPUT type="hidden" id="kaisitime21_10" value="">
+<INPUT type="hidden" id="syuryotime21_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_11" value="0">
+
+<INPUT type="hidden" id="kaisitime21_11" value="">
+<INPUT type="hidden" id="syuryotime21_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_12" value="0">
+
+<INPUT type="hidden" id="kaisitime21_12" value="">
+<INPUT type="hidden" id="syuryotime21_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_13" value="0">
+
+<INPUT type="hidden" id="kaisitime21_13" value="">
+<INPUT type="hidden" id="syuryotime21_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_14" value="0">
+
+<INPUT type="hidden" id="kaisitime21_14" value="">
+<INPUT type="hidden" id="syuryotime21_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_15" value="0">
+
+<INPUT type="hidden" id="kaisitime21_15" value="">
+<INPUT type="hidden" id="syuryotime21_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_16" value="0">
+
+<INPUT type="hidden" id="kaisitime21_16" value="">
+<INPUT type="hidden" id="syuryotime21_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_17" value="0">
+
+<INPUT type="hidden" id="kaisitime21_17" value="">
+<INPUT type="hidden" id="syuryotime21_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_18" value="0">
+
+<INPUT type="hidden" id="kaisitime21_18" value="">
+<INPUT type="hidden" id="syuryotime21_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_19" value="0">
+
+<INPUT type="hidden" id="kaisitime21_19" value="">
+<INPUT type="hidden" id="syuryotime21_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_20" value="0">
+
+<INPUT type="hidden" id="kaisitime21_20" value="">
+<INPUT type="hidden" id="syuryotime21_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_21" value="0">
+
+<INPUT type="hidden" id="kaisitime21_21" value="">
+<INPUT type="hidden" id="syuryotime21_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_22" value="0">
+
+<INPUT type="hidden" id="kaisitime21_22" value="">
+<INPUT type="hidden" id="syuryotime21_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_23" value="0">
+
+<INPUT type="hidden" id="kaisitime21_23" value="">
+<INPUT type="hidden" id="syuryotime21_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_24" value="0">
+
+<INPUT type="hidden" id="kaisitime21_24" value="">
+<INPUT type="hidden" id="syuryotime21_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_25" value="0">
+
+<INPUT type="hidden" id="kaisitime21_25" value="">
+<INPUT type="hidden" id="syuryotime21_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_26" value="0">
+
+<INPUT type="hidden" id="kaisitime21_26" value="">
+<INPUT type="hidden" id="syuryotime21_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_27" value="0">
+
+<INPUT type="hidden" id="kaisitime21_27" value="">
+<INPUT type="hidden" id="syuryotime21_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record21_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record22_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record22_2" value="0">
+
+<INPUT type="hidden" id="kaisitime22_2" value="09:00">
+<INPUT type="hidden" id="syuryotime22_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/30(火)  </th>
+
+
+
+
+
+
+
+					    <td id="td1122_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record22_3" value="0">
+
+<INPUT type="hidden" id="kaisitime22_3" value="11:00">
+<INPUT type="hidden" id="syuryotime22_3" value="13:00">
+
+
+
+
+
+					    <td id="td1122_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record22_4" value="0">
+
+<INPUT type="hidden" id="kaisitime22_4" value="13:00">
+<INPUT type="hidden" id="syuryotime22_4" value="15:00">
+
+
+
+
+
+					    <td id="td1122_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record22_5" value="0">
+
+<INPUT type="hidden" id="kaisitime22_5" value="15:00">
+<INPUT type="hidden" id="syuryotime22_5" value="17:00">
+
+
+
+
+
+					    <td id="td1122_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record22_6" value="0">
+
+<INPUT type="hidden" id="kaisitime22_6" value="">
+<INPUT type="hidden" id="syuryotime22_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_7" value="0">
+
+<INPUT type="hidden" id="kaisitime22_7" value="">
+<INPUT type="hidden" id="syuryotime22_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_8" value="0">
+
+<INPUT type="hidden" id="kaisitime22_8" value="">
+<INPUT type="hidden" id="syuryotime22_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_9" value="0">
+
+<INPUT type="hidden" id="kaisitime22_9" value="">
+<INPUT type="hidden" id="syuryotime22_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_10" value="0">
+
+<INPUT type="hidden" id="kaisitime22_10" value="">
+<INPUT type="hidden" id="syuryotime22_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_11" value="0">
+
+<INPUT type="hidden" id="kaisitime22_11" value="">
+<INPUT type="hidden" id="syuryotime22_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_12" value="0">
+
+<INPUT type="hidden" id="kaisitime22_12" value="">
+<INPUT type="hidden" id="syuryotime22_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_13" value="0">
+
+<INPUT type="hidden" id="kaisitime22_13" value="">
+<INPUT type="hidden" id="syuryotime22_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_14" value="0">
+
+<INPUT type="hidden" id="kaisitime22_14" value="">
+<INPUT type="hidden" id="syuryotime22_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_15" value="0">
+
+<INPUT type="hidden" id="kaisitime22_15" value="">
+<INPUT type="hidden" id="syuryotime22_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_16" value="0">
+
+<INPUT type="hidden" id="kaisitime22_16" value="">
+<INPUT type="hidden" id="syuryotime22_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_17" value="0">
+
+<INPUT type="hidden" id="kaisitime22_17" value="">
+<INPUT type="hidden" id="syuryotime22_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_18" value="0">
+
+<INPUT type="hidden" id="kaisitime22_18" value="">
+<INPUT type="hidden" id="syuryotime22_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_19" value="0">
+
+<INPUT type="hidden" id="kaisitime22_19" value="">
+<INPUT type="hidden" id="syuryotime22_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_20" value="0">
+
+<INPUT type="hidden" id="kaisitime22_20" value="">
+<INPUT type="hidden" id="syuryotime22_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_21" value="0">
+
+<INPUT type="hidden" id="kaisitime22_21" value="">
+<INPUT type="hidden" id="syuryotime22_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_22" value="0">
+
+<INPUT type="hidden" id="kaisitime22_22" value="">
+<INPUT type="hidden" id="syuryotime22_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_23" value="0">
+
+<INPUT type="hidden" id="kaisitime22_23" value="">
+<INPUT type="hidden" id="syuryotime22_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_24" value="0">
+
+<INPUT type="hidden" id="kaisitime22_24" value="">
+<INPUT type="hidden" id="syuryotime22_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_25" value="0">
+
+<INPUT type="hidden" id="kaisitime22_25" value="">
+<INPUT type="hidden" id="syuryotime22_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_26" value="0">
+
+<INPUT type="hidden" id="kaisitime22_26" value="">
+<INPUT type="hidden" id="syuryotime22_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_27" value="0">
+
+<INPUT type="hidden" id="kaisitime22_27" value="">
+<INPUT type="hidden" id="syuryotime22_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record22_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+
+
+
+
+
+
+
+
+    <INPUT type="hidden" id="record23_1" value="0">
+
+
+
+
+    <INPUT type="hidden" id="record23_2" value="0">
+
+<INPUT type="hidden" id="kaisitime23_2" value="09:00">
+<INPUT type="hidden" id="syuryotime23_2" value="11:00">
+
+				<tbody>
+
+
+
+					<tr><th><strong>10/31(水)  </th>
+
+
+
+
+
+
+
+					    <td id="td1123_1" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record23_3" value="0">
+
+<INPUT type="hidden" id="kaisitime23_3" value="11:00">
+<INPUT type="hidden" id="syuryotime23_3" value="13:00">
+
+
+
+
+
+					    <td id="td1123_2" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record23_4" value="0">
+
+<INPUT type="hidden" id="kaisitime23_4" value="13:00">
+<INPUT type="hidden" id="syuryotime23_4" value="15:00">
+
+
+
+
+
+					    <td id="td1123_3" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record23_5" value="0">
+
+<INPUT type="hidden" id="kaisitime23_5" value="15:00">
+<INPUT type="hidden" id="syuryotime23_5" value="17:00">
+
+
+
+
+
+					    <td id="td1123_4" STYLE="display:"""><img src="/regasu-shinjuku/jsp/images_jp/common/icon_timetable_X.gif" alt="X" title="X" ></td>
+
+
+
+
+
+
+    <INPUT type="hidden" id="record23_6" value="0">
+
+<INPUT type="hidden" id="kaisitime23_6" value="">
+<INPUT type="hidden" id="syuryotime23_6" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_7" value="0">
+
+<INPUT type="hidden" id="kaisitime23_7" value="">
+<INPUT type="hidden" id="syuryotime23_7" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_8" value="0">
+
+<INPUT type="hidden" id="kaisitime23_8" value="">
+<INPUT type="hidden" id="syuryotime23_8" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_9" value="0">
+
+<INPUT type="hidden" id="kaisitime23_9" value="">
+<INPUT type="hidden" id="syuryotime23_9" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_10" value="0">
+
+<INPUT type="hidden" id="kaisitime23_10" value="">
+<INPUT type="hidden" id="syuryotime23_10" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_11" value="0">
+
+<INPUT type="hidden" id="kaisitime23_11" value="">
+<INPUT type="hidden" id="syuryotime23_11" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_12" value="0">
+
+<INPUT type="hidden" id="kaisitime23_12" value="">
+<INPUT type="hidden" id="syuryotime23_12" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_13" value="0">
+
+<INPUT type="hidden" id="kaisitime23_13" value="">
+<INPUT type="hidden" id="syuryotime23_13" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_14" value="0">
+
+<INPUT type="hidden" id="kaisitime23_14" value="">
+<INPUT type="hidden" id="syuryotime23_14" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_15" value="0">
+
+<INPUT type="hidden" id="kaisitime23_15" value="">
+<INPUT type="hidden" id="syuryotime23_15" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_16" value="0">
+
+<INPUT type="hidden" id="kaisitime23_16" value="">
+<INPUT type="hidden" id="syuryotime23_16" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_17" value="0">
+
+<INPUT type="hidden" id="kaisitime23_17" value="">
+<INPUT type="hidden" id="syuryotime23_17" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_18" value="0">
+
+<INPUT type="hidden" id="kaisitime23_18" value="">
+<INPUT type="hidden" id="syuryotime23_18" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_19" value="0">
+
+<INPUT type="hidden" id="kaisitime23_19" value="">
+<INPUT type="hidden" id="syuryotime23_19" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_20" value="0">
+
+<INPUT type="hidden" id="kaisitime23_20" value="">
+<INPUT type="hidden" id="syuryotime23_20" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_21" value="0">
+
+<INPUT type="hidden" id="kaisitime23_21" value="">
+<INPUT type="hidden" id="syuryotime23_21" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_22" value="0">
+
+<INPUT type="hidden" id="kaisitime23_22" value="">
+<INPUT type="hidden" id="syuryotime23_22" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_23" value="0">
+
+<INPUT type="hidden" id="kaisitime23_23" value="">
+<INPUT type="hidden" id="syuryotime23_23" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_24" value="0">
+
+<INPUT type="hidden" id="kaisitime23_24" value="">
+<INPUT type="hidden" id="syuryotime23_24" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_25" value="0">
+
+<INPUT type="hidden" id="kaisitime23_25" value="">
+<INPUT type="hidden" id="syuryotime23_25" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_26" value="0">
+
+<INPUT type="hidden" id="kaisitime23_26" value="">
+<INPUT type="hidden" id="syuryotime23_26" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_27" value="0">
+
+<INPUT type="hidden" id="kaisitime23_27" value="">
+<INPUT type="hidden" id="syuryotime23_27" value="">
+
+
+
+
+    <INPUT type="hidden" id="record23_28" value="0">
+
+
+
+			</tr>
+		</tbody>
+
+
+
+</table>
+
+<ul class="navigation">
+
+
+<li id="nav-left"><a><input type="image" style="cursor:hand" id="leftbutton1" onClick="leftbutton()" src="/regasu-shinjuku/jsp/images_jp/common/btn-nav-left.gif" alt="←" title="←" STYLE="display:none"/></a></li>
+<li id="nav-right"><a><input type="image" style="cursor:hand" id="rightbutton1" onClick="rightbutton()" src="/regasu-shinjuku/jsp/images_jp/common/btn-nav-right.gif" alt="→" title="→" STYLE="display:none"/></a></li>
+
+</ul>
+</div><!-- wrapper -->
+</div><!-- timetable -->
+
+</div><!-- inner-contents -->
+
+
+
+<div id="buttons-navigation">
+<ul class="triple">
+<li class="first">
+
+
+
+
+
+	<a href="javaScript:okbutton1();">
+
+
+
+
+
+
+
+		<img src="/regasu-shinjuku/jsp/images_jp/common/btn-nav-change2.gif" alt="日付別に切替" title="日付別に切替" />
+
+
+	</a>
+</li>
+
+
+
+
+
+<li class="second" class="center"><a  href="javaScript:okbuttonTk();"><img src="/regasu-shinjuku/jsp/images_jp/common/btn-nav-reserve.gif" alt="予約する" title="予約する" /></a></li>
+
+
+
+<li class="third">&nbsp;</a></li>
+</ul>
+</div><!-- buttons-navigation -->
+
+</div><!-- contents -->
+
+<ul id="footer">
+
+
+
+
+
+
+
+
+
+		<li id="btn-back"><a href="/regasu-shinjuku/reserve/gin_z_dsp_sel?u_genzai_idx=4&amp;g_kinonaiyo=8&g_sessionid=2w1wUa0uddfwg663Ed013Quf43l1P3mF" ><img src="/regasu-shinjuku/jsp/images_jp/common/btn-back.gif" alt="前へ戻る" title="前へ戻る" /></a></li>
+
+
+
+
+
+
+
+
+
+		<li id="btn-user">		<a href="/regasu-shinjuku/reserve/gin_init?g_sessionid=2w1wUa0uddfwg663Ed013Quf43l1P3mF" target="_self"><IMG src="/regasu-shinjuku/jsp/images_jp/common/btn-top.gif" alt="トップページへ" title="トップページへ" ></A>
+</li>
+
+
+</ul>
+<FORM name="form_nm" action="/regasu-shinjuku/reserve/gin_z_amenitytime_sel_2" target="_parent" method="post">
+<INPUT type="hidden" name="g_sessionid" value="2w1wUa0uddfwg663Ed013Quf43l1P3mF">
+   <input type="hidden" name="flg_sstkoma" value="0">
+
+   <SELECT multiple size="24" name="kanricd" style="visibility: hidden;height:0px">
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+      <OPTION value="11">11</OPTION>
+
+    </SELECT>
+
+    <SELECT multiple size="24" name="cssisetucd" style="visibility: hidden;height:0px">
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+
+      <OPTION value="0000101">101</OPTION>
+
+    </SELECT>
+
+    <SELECT multiple size="24" name="g_sisetucd" style="visibility: hidden;height:0px">
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+      <OPTION value="101">101</OPTION>
+
+    </SELECT>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<SELECT multiple size="24" name="g_stgroup" style="visibility: hidden;height:0px">
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+
+      	<OPTION value="11"></OPTION>
+
+    </SELECT>
+
+    <SELECT multiple size="24" name="basyocd" style="visibility: hidden;height:0px">
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+      <OPTION value="50">50</OPTION>
+
+    </SELECT>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <SELECT multiple size="24" name="ymd" style="visibility: hidden;height:0px">
+
+      <OPTION value="20181008">20181008</OPTION>
+
+      <OPTION value="20181009">20181009</OPTION>
+
+      <OPTION value="20181010">20181010</OPTION>
+
+      <OPTION value="20181011">20181011</OPTION>
+
+      <OPTION value="20181012">20181012</OPTION>
+
+      <OPTION value="20181013">20181013</OPTION>
+
+      <OPTION value="20181014">20181014</OPTION>
+
+      <OPTION value="20181015">20181015</OPTION>
+
+      <OPTION value="20181016">20181016</OPTION>
+
+      <OPTION value="20181017">20181017</OPTION>
+
+      <OPTION value="20181018">20181018</OPTION>
+
+      <OPTION value="20181019">20181019</OPTION>
+
+      <OPTION value="20181020">20181020</OPTION>
+
+      <OPTION value="20181021">20181021</OPTION>
+
+      <OPTION value="20181022">20181022</OPTION>
+
+      <OPTION value="20181023">20181023</OPTION>
+
+      <OPTION value="20181024">20181024</OPTION>
+
+      <OPTION value="20181025">20181025</OPTION>
+
+      <OPTION value="20181026">20181026</OPTION>
+
+      <OPTION value="20181027">20181027</OPTION>
+
+      <OPTION value="20181028">20181028</OPTION>
+
+      <OPTION value="20181029">20181029</OPTION>
+
+      <OPTION value="20181030">20181030</OPTION>
+
+      <OPTION value="20181031">20181031</OPTION>
+
+    </SELECT>
+
+    <SELECT multiple size="24" name="g_kaisitime" style="visibility: hidden;height:0px">
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+    </SELECT>
+
+    <SELECT multiple size="24" name="g_syurtime" style="visibility: hidden;height:0px">
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+      <OPTION value="">0</OPTION>
+
+    </SELECT>
+
+    <SELECT multiple size="24" name="kaisikoma" style="visibility: hidden;height:0px">
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+    </SELECT>
+
+    <SELECT multiple size="24" name="syurkoma" style="visibility: hidden;height:0px">
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+      <OPTION value="0">0</OPTION>
+
+    </SELECT>
+
+    <SELECT multiple size="24" name="g_renzkkoma" style="visibility: hidden;height:0px">
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+
+      <OPTION value="0">0</OPTION>
+
+    </SELECT>
+<INPUT type="hidden" name="hidflag" value="7">
+
+<INPUT type="hidden" name="u_genzai_idx" value="7">
+<INPUT type="hidden" name="g_kinonaiyo" value="8">
+
+
+
+        <input type="hidden" value = ""  name="showStartKoma" />
+        <input type="hidden" value = ""  name="showEndKoma" />
+
+
+
+</FORM>
+
+<FORM name="backFrm" action="" target="_parent" method="post">
+<INPUT type="hidden" name="g_sessionid" value="2w1wUa0uddfwg663Ed013Quf43l1P3mF">
+<INPUT type="hidden" name="u_genzai_idx" value="5" >
+<INPUT type="hidden" name="g_kinonaiyo" value="8">
+<INPUT type="hidden" name="ymd" value="20181008">
+<input type="hidden" value = ""  name="showStartKoma" />
+<input type="hidden" value = ""  name="showEndKoma" />
+</FORM>
+
+<FORM name="chgDspDateFrm" action="" target="_parent" method="post">
+<INPUT type="hidden" name="g_sessionid" value="2w1wUa0uddfwg663Ed013Quf43l1P3mF">
+<INPUT type="hidden" name="u_genzai_idx" value="" >
+<INPUT type="hidden" name="flg_ikou" value="" >
+
+
+<INPUT type="hidden" name="hiduke_sousa_flg" value="" >
+
+<INPUT type="hidden" name="u_hyojibi" value="" >
+<INPUT type="hidden" name="yoyakuinfo" value="">
+
+
+        <input type="hidden" value = ""  name="showStartKoma" />
+        <input type="hidden" value = ""  name="showEndKoma" />
+
+</FORM>
+
+
+
+<p id="copyright">&nbsp;</p>
+
+</div><!-- wrapper -->
+</body>
+</html>
